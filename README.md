@@ -10,7 +10,7 @@ Welcome to the **neveryourbae.github.io** website! This tool is designed to assi
   
 ## How to Use
 
-1. Navigate to the website: [Tomket Lovers ID](https://neveryourbae.github.io/)
+1. Navigate to the website: (https://neveryourbae.github.io/)
 2. Search for the airdrop project you're interested in.
    
 ## Contributions
