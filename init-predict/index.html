@@ -16,8 +16,8 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
+      background-color: #121212;
+      color: #e0e0e0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -28,17 +28,23 @@
     .container {
       max-width: 500px;
       margin: auto;
-      background: #fff;
+      background: #1f1f1f;
       padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
 
     .container h1 {
       font-size: 1.8rem;
       margin-bottom: 15px;
-      color: #222;
+      color: #ffffff;
+    }
+
+    .container p {
+      font-size: 1.1rem;
+      color: #bbb;
+      margin-bottom: 30px;
     }
 
     .input-container {
@@ -52,12 +58,14 @@
       padding: 14px;
       font-size: 1rem;
       border-radius: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #333;
       width: 100%;
+      background-color: #333;
+      color: #fff;
     }
 
     .input-button {
-      background-color: #4f46e5;
+      background-color: #6200ea;
       color: white;
       padding: 12px;
       font-size: 1rem;
@@ -68,15 +76,35 @@
     }
 
     .input-button:hover {
-      background-color: #4338ca;
+      background-color: #3700b3;
     }
 
     .results {
-      background: #f1f5f9;
+      background: #333;
       padding: 20px;
       border-radius: 12px;
       margin-top: 20px;
       font-size: 1rem;
+    }
+
+    .result-item {
+      margin-bottom: 20px;
+      background: #424242;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .result-item h4 {
+      margin-bottom: 10px;
+      color: #ffffff;
+      font-size: 1.2rem;
+    }
+
+    .result-item p {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #ccc;
     }
 
     footer {
@@ -100,6 +128,7 @@
 <body>
   <div class="container">
     <h1>$INIT Price Predictor</h1>
+    <p>Predict the price of Initia tokens based on MCAP and FDV of TIA, DYM, and Premarket tokens.</p>
     <div class="input-container">
       <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
       <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
@@ -152,18 +181,22 @@
         const dymTotalUSD = amount * dymPrice;
 
         document.getElementById('results').innerHTML = `
-          <h3>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h3>
+          <div class="result-item">
+            <h4>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h4>
+            <p><strong>Harga Premarket (Gate.io):</strong><br> 
+            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)}</p>
+          </div>
           
-          <p><strong>Harga Premarket (Gate.io):</strong><br> 
-          $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)}</p>
+          <div class="result-item">
+            <h4>Berdasarkan TIA Market Cap:</h4>
+            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)}</p>
+          </div>
           
-          <p><strong>Berdasarkan TIA Market Cap:</strong><br> 
-          Estimasi Harga: $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)}</p>
-          
-          <p><strong>Berdasarkan DYM Market Cap:</strong><br> 
-          Estimasi Harga: $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)}</p>
+          <div class="result-item">
+            <h4>Berdasarkan DYM Market Cap:</h4>
+            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)}</p>
+          </div>
         `;
-
         document.getElementById('results').style.display = "block";
       } catch (error) {
         console.error("Fetch error:", error);
