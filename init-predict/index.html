@@ -144,6 +144,7 @@
     const fdv = 100000000; // FDV INIT
     const tiaUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
     const dymUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
+    const exchangeRateUrl = "https://v6.exchangerate-api.com/v6/YOUR_API_KEY/latest/USD"; // Ganti dengan API Key kamu
 
     async function getMarketCap(url) {
       try {
@@ -151,6 +152,16 @@
         return res.data.quotes.USD.market_cap;
       } catch (err) {
         console.error("Market cap fetch error:", err);
+        return null;
+      }
+    }
+
+    async function getExchangeRate() {
+      try {
+        const response = await axios.get(exchangeRateUrl);
+        return response.data.conversion_rates.IDR; // Mendapatkan nilai tukar USD ke IDR
+      } catch (error) {
+        console.error("Error fetching exchange rate:", error);
         return null;
       }
     }
@@ -164,37 +175,42 @@
       }
 
       try {
-        const [initRes, tiaCap, dymCap] = await Promise.all([
+        const [initRes, tiaCap, dymCap, exchangeRate] = await Promise.all([
           axios.get('https://init-api-lemon.vercel.app/api'),
           getMarketCap(tiaUrl),
-          getMarketCap(dymUrl)
+          getMarketCap(dymUrl),
+          getExchangeRate() // Mendapatkan nilai tukar USD ke IDR
         ]);
 
         const latestDealPrice = initRes.data.latest_deal_price;
         const initTotalUSD = amount * latestDealPrice;
+        const initTotalIDR = initTotalUSD * exchangeRate;
 
         // Hitung berdasarkan TIA & DYM
         const tiaPrice = tiaCap / totalSupply;
         const dymPrice = dymCap / totalSupply;
 
         const tiaTotalUSD = amount * tiaPrice;
+        const tiaTotalIDR = tiaTotalUSD * exchangeRate;
+
         const dymTotalUSD = amount * dymPrice;
+        const dymTotalIDR = dymTotalUSD * exchangeRate;
 
         document.getElementById('results').innerHTML = `
           <div class="result-item">
             <h4>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h4>
             <p><strong>Harga Premarket (Gate.io):</strong><br> 
-            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)}</p>
+            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(initTotalIDR).toLocaleString("id-ID")}</p>
           </div>
           
           <div class="result-item">
             <h4>Berdasarkan TIA Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)}</p>
+            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(tiaTotalIDR).toLocaleString("id-ID")}</p>
           </div>
           
           <div class="result-item">
             <h4>Berdasarkan DYM Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)}</p>
+            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(dymTotalIDR).toLocaleString("id-ID")}</p>
           </div>
         `;
         document.getElementById('results').style.display = "block";
