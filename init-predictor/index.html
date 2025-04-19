@@ -62,7 +62,7 @@
 
     const tiaUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
     const dymUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
-    const premarketUrl = "https://init-api-lemon.vercel.app/api";
+    const premarketUrl = "https://init-api-lemon.vercel.app/api"; // GANTI ini kalau kamu sudah deploy ke Vercel
 
     async function getMarketCap(url) {
       try {
@@ -79,7 +79,7 @@
       try {
         const res = await fetch(url);
         const data = await res.json();
-        return parseFloat(data.result.lastPrice);
+        return parseFloat(data.latest_deal_price); // SUDAH DIBENARKAN
       } catch (err) {
         console.error("Premarket price error:", err);
         return null;
@@ -102,7 +102,8 @@
       ]);
 
       if (!tiaMcap || !dymMcap || !prePrice) {
-        alert("Failed to fetch data.");
+        console.error("Fetched values:", { tiaMcap, dymMcap, prePrice });
+        alert("Failed to fetch data. Check console for details.");
         return;
       }
 
@@ -141,4 +142,3 @@
   </script>
 </body>
 </html>
-
