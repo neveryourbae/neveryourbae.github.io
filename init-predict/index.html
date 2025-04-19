@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,37 +21,40 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 20px;
+      align-items: center;
+      padding: 40px 20px;
     }
 
     .container {
-      max-width: 500px;
-      margin: auto;
+      width: 100%;
+      max-width: 700px;
       background: #1f1f1f;
-      padding: 25px;
-      border-radius: 15px;
+      padding: 35px;
+      border-radius: 20px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      text-align: center;
     }
 
     .container h1 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       margin-bottom: 15px;
       color: #ffffff;
+      text-align: center;
     }
 
     .container p {
       font-size: 1.1rem;
       color: #bbb;
       margin-bottom: 30px;
+      text-align: center;
     }
 
     .input-container {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-direction: row;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .input-container input {
@@ -59,15 +62,16 @@
       font-size: 1rem;
       border-radius: 10px;
       border: 1px solid #333;
-      width: 100%;
       background-color: #333;
       color: #fff;
+      width: 60%;
+      min-width: 240px;
     }
 
     .input-button {
       background-color: #6200ea;
       color: white;
-      padding: 12px;
+      padding: 14px 20px;
       font-size: 1rem;
       border: none;
       border-radius: 10px;
@@ -80,47 +84,58 @@
     }
 
     .results {
-      background: #333;
-      padding: 20px;
-      border-radius: 12px;
       margin-top: 20px;
-      font-size: 1rem;
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
     }
 
     .result-item {
-      margin-bottom: 20px;
-      background: #424242;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .result-item h4 {
+      font-size: 1.25rem;
       margin-bottom: 10px;
       color: #ffffff;
-      font-size: 1.2rem;
     }
 
     .result-item p {
       font-size: 1.1rem;
-      margin-bottom: 8px;
       color: #ccc;
     }
 
     footer {
-      margin-top: 40px;
-      text-align: center;
+      margin-top: 50px;
       font-size: 0.85rem;
       color: #aaa;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .results {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media screen and (max-width: 480px) {
       .container {
-        padding: 20px 15px;
+        padding: 25px 15px;
       }
 
-      .container h1 {
-        font-size: 1.5rem;
+      .input-container {
+        flex-direction: column;
+      }
+
+      .input-container input {
+        width: 100%;
+      }
+
+      .input-button {
+        width: 100%;
       }
     }
   </style>
@@ -128,11 +143,13 @@
 <body>
   <div class="container">
     <h1>$INIT Price Predictor</h1>
-    <p>Prediksi harga token INIT berdasarkan MCAP TIA, DYM, BERA, IP, dan WCT.</p>
+    <p>Prediksi harga INIT berdasarkan MCAP token seperti TIA, DYM, BERA, IP, dan WCT.</p>
+
     <div class="input-container">
       <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
       <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
     </div>
+
     <div class="results" id="results" style="display: none;"></div>
   </div>
 
@@ -141,11 +158,13 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     const totalSupply = 1000000000;
-    const tiaUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
-    const dymUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
-    const beraUrl = "https://api.coinpaprika.com/v1/tickers/bera-berachain";
-    const ipUrl = "https://api.coinpaprika.com/v1/tickers/ip-story";
-    const wctUrl = "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token";
+    const urls = {
+      tia: "https://api.coinpaprika.com/v1/tickers/tia-celestia",
+      dym: "https://api.coinpaprika.com/v1/tickers/dym-dymension",
+      bera: "https://api.coinpaprika.com/v1/tickers/bera-berachain",
+      ip: "https://api.coinpaprika.com/v1/tickers/ip-story",
+      wct: "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token"
+    };
 
     async function getMarketCap(url) {
       try {
@@ -172,64 +191,35 @@
       try {
         const [initRes, tiaCap, dymCap, beraCap, ipCap, wctCap] = await Promise.all([
           axios.get('https://init-api-lemon.vercel.app/api'),
-          getMarketCap(tiaUrl),
-          getMarketCap(dymUrl),
-          getMarketCap(beraUrl),
-          getMarketCap(ipUrl),
-          getMarketCap(wctUrl)
+          getMarketCap(urls.tia),
+          getMarketCap(urls.dym),
+          getMarketCap(urls.bera),
+          getMarketCap(urls.ip),
+          getMarketCap(urls.wct)
         ]);
 
-        const latestDealPrice = initRes.data.latest_deal_price;
-        const initTotalUSD = amount * latestDealPrice;
+        const latestPrice = initRes.data.latest_deal_price;
+        const data = [
+          { name: 'Premarket (Gate.io)', price: latestPrice },
+          { name: 'TIA', price: tiaCap / totalSupply },
+          { name: 'DYM', price: dymCap / totalSupply },
+          { name: 'BERA', price: beraCap / totalSupply },
+          { name: 'IP', price: ipCap / totalSupply },
+          { name: 'WCT', price: wctCap / totalSupply }
+        ];
 
-        const tiaPrice = tiaCap / totalSupply;
-        const dymPrice = dymCap / totalSupply;
-        const beraPrice = beraCap / totalSupply;
-        const ipPrice = ipCap / totalSupply;
-        const wctPrice = wctCap / totalSupply;
+        resultsDiv.innerHTML = data.map(d => `
+          <div class="result-item">
+            <h4>${d.name}</h4>
+            <p><strong>Estimasi Harga:</strong> $${d.price.toFixed(5)}</p>
+            <p><strong>Total:</strong> $${(d.price * amount).toFixed(2)}</p>
+          </div>
+        `).join('');
 
-        const tiaTotalUSD = amount * tiaPrice;
-        const dymTotalUSD = amount * dymPrice;
-        const beraTotalUSD = amount * beraPrice;
-        const ipTotalUSD = amount * ipPrice;
-        const wctTotalUSD = amount * wctPrice;
-
-        resultsDiv.innerHTML = `
-          <div class="result-item">
-            <h4>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h4>
-            <p><strong>Harga Premarket (Gate.io):</strong><br> 
-            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)}</p>
-          </div>
-          
-          <div class="result-item">
-            <h4>Berdasarkan TIA Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)}</p>
-          </div>
-          
-          <div class="result-item">
-            <h4>Berdasarkan DYM Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)}</p>
-          </div>
-
-          <div class="result-item">
-            <h4>Berdasarkan BERA Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${beraPrice.toFixed(5)} | Total: $${beraTotalUSD.toFixed(2)}</p>
-          </div>
-
-          <div class="result-item">
-            <h4>Berdasarkan IP Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${ipPrice.toFixed(5)} | Total: $${ipTotalUSD.toFixed(2)}</p>
-          </div>
-
-          <div class="result-item">
-            <h4>Berdasarkan WCT Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${wctPrice.toFixed(5)} | Total: $${wctTotalUSD.toFixed(2)}</p>
-          </div>
-        `;
-        resultsDiv.style.display = "block";
+        resultsDiv.style.display = "grid";
       } catch (error) {
         console.error("Fetch error:", error);
-        resultsDiv.innerHTML = "Gagal mengambil data harga.";
+        resultsDiv.innerHTML = "Gagal mengambil data harga: " + error.message;
         resultsDiv.style.display = "block";
       }
     }
