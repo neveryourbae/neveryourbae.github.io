@@ -198,19 +198,19 @@
 
         document.getElementById('results').innerHTML = `
           <div class="result-item">
-            <h4>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h4>
+            <h4>Total $INIT: ${Math.round(amount).toLocaleString("IDR")}</h4>
             <p><strong>Harga Premarket (Gate.io):</strong><br> 
-            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(initTotalIDR).toLocaleString("id-ID")}</p>
+            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(initTotalIDR).toLocaleString("IDR")}</p>
           </div>
           
           <div class="result-item">
             <h4>Berdasarkan TIA Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(tiaTotalIDR).toLocaleString("id-ID")}</p>
+            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(tiaTotalIDR).toLocaleString("id-IDR")}</p>
           </div>
           
           <div class="result-item">
             <h4>Berdasarkan DYM Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(dymTotalIDR).toLocaleString("id-ID")}</p>
+            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(dymTotalIDR).toLocaleString("IDR")}</p>
           </div>
         `;
         document.getElementById('results').style.display = "block";
