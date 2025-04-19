@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 
   <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
 
   <!-- Styles -->
   <style>
@@ -29,7 +29,7 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Roboto', sans-serif;
       background-color: #0d1117;
       color: #e6edf3;
       display: flex;
@@ -48,7 +48,7 @@
 
     h1 {
       font-size: 2.5rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #58a6ff;
       margin-bottom: 10px;
     }
@@ -89,31 +89,6 @@
 
     .search-button:hover {
       background-color: #2ea043;
-    }
-
-    .tab-switch {
-      margin-bottom: 30px;
-    }
-
-    .tab-button {
-      padding: 10px 24px;
-      margin: 0 8px;
-      background-color: #21262d;
-      color: #c9d1d9;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .tab-button:hover {
-      background-color: #30363d;
-    }
-
-    .tab-button.active {
-      background-color: #58a6ff;
-      color: #fff;
-      border-color: transparent;
     }
 
     .flex-container {
@@ -165,7 +140,6 @@
       color: #79c0ff;
     }
 
-    /* Mobile Responsive Tweaks */
     @media screen and (max-width: 600px) {
       h1 {
         font-size: 1.8rem;
@@ -192,18 +166,6 @@
         border-radius: 8px;
       }
 
-      .tab-switch {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-      }
-
-      .tab-button {
-        flex: 1 1 45%;
-        text-align: center;
-      }
-
       .flex-container {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 12px;
@@ -222,20 +184,15 @@
     <h2>AIRDROP CHECKER</h2>
 
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="What airdrop do you want to check today?" />
-      <button class="search-button" onclick="searchAirdrop()">
+      <input type="text" id="searchInput" placeholder="What airdrop do you want to check today?" aria-label="Search airdrop" />
+      <button class="search-button" aria-label="Search" onclick="searchAirdrop()">
         <i class="fas fa-search"></i>
       </button>
     </div>
 
-    <div class="tab-switch">
-      <button class="tab-button active" onclick="switchTab('live')">LIVE</button>
-      <button class="tab-button" onclick="switchTab('listed')">LISTED</button>
-    </div>
-
     <div id="flexContainer" class="flex-container">
-      <a href="/init-predictor/" class="flex-item listed">init-predictor</a>
-      <a href="/init-predict/" class="flex-item live">init-premarket</a>
+      <a href="/init-predictor/" class="flex-item">init-predictor</a>
+      <a href="/init-predict/" class="flex-item">init-premarket</a>
     </div>
   </div>
 
@@ -244,31 +201,13 @@
   </footer>
 
   <script>
-    let activeTab = 'live';
-
-    function switchTab(tab) {
-      activeTab = tab;
-      document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-      document.querySelectorAll('.flex-item').forEach(item => {
-        item.style.display = item.classList.contains(tab) ? 'block' : 'none';
-      });
-      if (tab === 'live') {
-        document.querySelector('.tab-button:first-child').classList.add('active');
-      } else {
-        document.querySelector('.tab-button:last-child').classList.add('active');
-      }
-    }
-
     function searchAirdrop() {
       const searchValue = document.getElementById('searchInput').value.toLowerCase();
       document.querySelectorAll('.flex-item').forEach(item => {
         item.style.display = item.textContent.toLowerCase().includes(searchValue) ? 'block' : 'none';
       });
     }
-
-    switchTab('live');
   </script>
 
 </body>
 </html>
-
