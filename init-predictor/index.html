@@ -1,143 +1,210 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Initia Price Predictor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$INIT Price Predictor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Roboto', sans-serif;
-      background: #f4f4f4;
+      font-family: 'Inter', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       padding: 20px;
     }
 
-    h1 {
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       text-align: center;
+    }
+
+    .container h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #ffffff;
+    }
+
+    .container p {
+      font-size: 1.1rem;
+      color: #bbb;
+      margin-bottom: 30px;
     }
 
     .input-container {
-      text-align: center;
-      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-direction: column;
     }
 
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 5px;
+    .input-container input {
+      padding: 14px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #333;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .input-button {
+      background-color: #6200ea;
+      color: white;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .input-button:hover {
+      background-color: #3700b3;
     }
 
     .results {
-      max-width: 600px;
-      margin: 0 auto;
-      background: white;
+      background: #333;
       padding: 20px;
-      border-radius: 10px;
-      display: none;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 1rem;
     }
 
-    .session {
+    .result-item {
       margin-bottom: 20px;
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
     }
 
-    .session strong {
-      display: block;
+    .result-item h4 {
+      margin-bottom: 10px;
+      color: #ffffff;
+      font-size: 1.2rem;
+    }
+
+    .result-item p {
+      font-size: 1.1rem;
       margin-bottom: 8px;
+      color: #ccc;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      .container h1 {
+        font-size: 1.6rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Initia Price Predictor</h1>
-
-  <div class="input-container">
-    <input type="number" id="tokenInput" placeholder="Enter your Initia token amount" />
-    <button onclick="calculatePrice()">Calculate</button>
+  <div class="container">
+    <h1>$INIT Price Predictor</h1>
+    <p>Prediksi harga token Initia berdasarkan MCAP & FDV dari TIA, DYM, BERA, IP, dan WCT</p>
+    <div class="input-container">
+      <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
+      <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
+    </div>
+    <div class="results" id="results" style="display: none;"></div>
   </div>
 
-  <div class="results" id="results"></div>
+  <footer>$INIT SAYA</footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    const totalSupply = 1000000000;
-    const fdv = 100000000;
-
-    const tiaUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
-    const dymUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
-    const premarketUrl = "https://init-api-lemon.vercel.app/api"; // GANTI ini kalau kamu sudah deploy ke Vercel
+    const totalSupply = 1000000000; // Supply INIT
+    const urls = {
+      tia: "https://api.coinpaprika.com/v1/tickers/tia-celestia",
+      dym: "https://api.coinpaprika.com/v1/tickers/dym-dymension",
+      bera: "https://api.coinpaprika.com/v1/tickers/bera-berachain",
+      ip: "https://api.coinpaprika.com/v1/tickers/ip-story",
+      wct: "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token"
+    };
 
     async function getMarketCap(url) {
       try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data.quotes.USD.market_cap;
+        const res = await axios.get(url);
+        return res.data.quotes.USD.market_cap;
       } catch (err) {
         console.error("Market cap fetch error:", err);
         return null;
       }
     }
 
-    async function getPremarketPrice(url) {
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        return parseFloat(data.latest_deal_price); // SUDAH DIBENARKAN
-      } catch (err) {
-        console.error("Premarket price error:", err);
-        return null;
+    async function supraValue() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (!amount || amount <= 0) {
+        alert('Masukkan jumlah INIT yang valid.');
+        return;
       }
-    }
 
-    async function calculatePrice() {
-      const tokensOwned = parseFloat(document.getElementById('tokenInput').value);
       const resultsDiv = document.getElementById('results');
-
-      if (isNaN(tokensOwned)) {
-        alert("Enter a valid token amount.");
-        return;
-      }
-
-      const [tiaMcap, dymMcap, prePrice] = await Promise.all([
-        getMarketCap(tiaUrl),
-        getMarketCap(dymUrl),
-        getPremarketPrice(premarketUrl)
-      ]);
-
-      if (!tiaMcap || !dymMcap || !prePrice) {
-        console.error("Fetched values:", { tiaMcap, dymMcap, prePrice });
-        alert("Failed to fetch data. Check console for details.");
-        return;
-      }
-
-      const tiaPrice = tiaMcap / totalSupply;
-      const dymPrice = dymMcap / totalSupply;
-
-      const tiaFdv = tiaPrice * fdv;
-      const dymFdv = dymPrice * fdv;
-      const preFdv = prePrice * fdv;
-
-      resultsDiv.innerHTML = `
-        <div class="session">
-          <strong>Based on TIA Market Cap</strong>
-          Market Cap: $${tiaMcap.toLocaleString()}<br>
-          FDV: $${Math.round(tiaFdv).toLocaleString()}<br>
-          Token Price: $${tiaPrice.toFixed(4)}<br>
-          Your Value: $${(tokensOwned * tiaPrice).toFixed(2)}
-        </div>
-        <div class="session">
-          <strong>Based on DYM Market Cap</strong>
-          Market Cap: $${dymMcap.toLocaleString()}<br>
-          FDV: $${Math.round(dymFdv).toLocaleString()}<br>
-          Token Price: $${dymPrice.toFixed(4)}<br>
-          Your Value: $${(tokensOwned * dymPrice).toFixed(2)}
-        </div>
-        <div class="session">
-          <strong>Based on Gate.io Premarket</strong>
-          Token Price: $${prePrice.toFixed(4)}<br>
-          FDV: $${Math.round(preFdv).toLocaleString()}<br>
-          Your Value: $${(tokensOwned * prePrice).toFixed(2)}
-        </div>
-      `;
-
       resultsDiv.style.display = "block";
+      resultsDiv.innerHTML = "Mengambil data...";
+
+      try {
+        const [initRes, tiaCap, dymCap, beraCap, ipCap, wctCap] = await Promise.all([
+          axios.get('https://init-api-lemon.vercel.app/api'),
+          getMarketCap(urls.tia),
+          getMarketCap(urls.dym),
+          getMarketCap(urls.bera),
+          getMarketCap(urls.ip),
+          getMarketCap(urls.wct)
+        ]);
+
+        const latestDealPrice = initRes.data.latest_deal_price;
+
+        const data = [
+          { name: "Premarket (Gate.io)", price: latestDealPrice },
+          { name: "Berdasarkan TIA Market Cap", price: tiaCap / totalSupply },
+          { name: "Berdasarkan DYM Market Cap", price: dymCap / totalSupply },
+          { name: "Berdasarkan BERA Market Cap", price: beraCap / totalSupply },
+          { name: "Berdasarkan IP Market Cap", price: ipCap / totalSupply },
+          { name: "Berdasarkan WCT Market Cap", price: wctCap / totalSupply }
+        ];
+
+        resultsDiv.innerHTML = data.map(d => `
+          <div class="result-item">
+            <h4>${d.name}</h4>
+            <p><strong>Estimasi Harga:</strong> $${d.price.toFixed(5)}</p>
+            <p><strong>Total:</strong> $${(d.price * amount).toFixed(2)}</p>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error("Fetch error:", error);
+        resultsDiv.innerHTML = "Gagal mengambil data harga.";
+      }
     }
   </script>
 </body>
