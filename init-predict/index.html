@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>$INIT Predict</title>
+  <title>$INIT Price Predictor</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
@@ -111,6 +111,21 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+    const totalSupply = 1000000000; // Supply INIT
+    const fdv = 100000000; // FDV INIT
+    const tiaUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
+    const dymUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
+
+    async function getMarketCap(url) {
+      try {
+        const res = await axios.get(url);
+        return res.data.quotes.USD.market_cap;
+      } catch (err) {
+        console.error("Market cap fetch error:", err);
+        return null;
+      }
+    }
+
     async function supraValue() {
       const amount = parseFloat(document.getElementById('amount').value);
 
@@ -120,17 +135,38 @@
       }
 
       try {
-        const response = await axios.get('https://init-api-lemon.vercel.app/api');
-        const latestDealPrice = response.data.latest_deal_price;
-        const totalPrice = amount * latestDealPrice;
+        const [initRes, tiaCap, dymCap] = await Promise.all([
+          axios.get('https://init-api-lemon.vercel.app/api'),
+          getMarketCap(tiaUrl),
+          getMarketCap(dymUrl)
+        ]);
+
+        const latestDealPrice = initRes.data.latest_deal_price;
+        const initTotalUSD = amount * latestDealPrice;
+
+        // Hitung berdasarkan TIA & DYM
+        const tiaPrice = tiaCap / totalSupply;
+        const dymPrice = dymCap / totalSupply;
+
+        const tiaTotalUSD = amount * tiaPrice;
+        const dymTotalUSD = amount * dymPrice;
 
         document.getElementById('results').innerHTML = `
           <h3>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h3>
-          <p>Harga Premarket (Gate.io): $${latestDealPrice.toFixed(5)}</p>
-          <p>Total USD: $${totalPrice.toFixed(2)}</p>
+          
+          <p><strong>Harga Premarket (Gate.io):</strong><br> 
+          $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)}</p>
+          
+          <p><strong>Berdasarkan TIA Market Cap:</strong><br> 
+          Estimasi Harga: $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)}</p>
+          
+          <p><strong>Berdasarkan DYM Market Cap:</strong><br> 
+          Estimasi Harga: $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)}</p>
         `;
+
         document.getElementById('results').style.display = "block";
       } catch (error) {
+        console.error("Fetch error:", error);
         document.getElementById('results').innerHTML = "Gagal mengambil data harga.";
         document.getElementById('results').style.display = "block";
       }
@@ -138,4 +174,3 @@
   </script>
 </body>
 </html>
-
