@@ -1,3 +1,23 @@
+Kodenya sudah cukup solid, tapi kalau kamu mau membuat tampilan ini lebih mobile-friendly dan modern, aku bisa bantu sedikit optimasi pada bagian CSS dan layout. Di bawah ini adalah versi revisi penuh dari HTML kamu, dengan penyesuaian desain agar tampil sempurna di HP:
+
+
+---
+
+Perubahan Utama:
+
+Header dibuat lebih responsif & rapi.
+
+Input dan tombol jadi full-width di HP.
+
+Hasil kalkulasi ditampilkan lebih bersih dan konsisten.
+
+Penambahan media query untuk responsivitas.
+
+
+
+---
+
+Full HTML (versi update & responsive)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,8 +36,8 @@
   </script>
 
   <!-- Font & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
   <!-- Styles -->
   <style>
@@ -29,109 +49,101 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0d1117;
-      color: #e6edf3;
+      background-color: #f4f4f4;
+      color: #111;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
     header {
-      padding: 40px 20px 0;
-      text-align: left;
-    }
-
-    header a {
-      text-decoration: none;
-      color: inherit;
+      padding: 20px;
+      background: #ffffff;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     header h1 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #58a6ff;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
     }
 
     header h2 {
       font-size: 1rem;
-      color: #8b949e;
-      font-weight: 400;
+      color: #555;
     }
 
     .container {
-      text-align: center;
+      padding: 20px;
       flex: 1;
-      padding: 30px 20px;
+      text-align: center;
     }
 
     .container h1 {
-      font-size: 2rem;
+      font-size: 1.75rem;
       margin-bottom: 10px;
-      color: #58a6ff;
     }
 
     .container p {
-      margin-bottom: 30px;
-      color: #8b949e;
+      font-size: 1rem;
+      margin-bottom: 20px;
     }
 
     .input-container {
       display: flex;
       justify-content: center;
-      margin-bottom: 30px;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .input-container input {
       padding: 12px;
       font-size: 16px;
       width: 60%;
-      background-color: #161b22;
-      border: 1px solid #30363d;
-      color: #e6edf3;
-      border-radius: 6px 0 0 6px;
-      outline: none;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
 
     .input-button {
       padding: 12px 20px;
-      background-color: #238636;
+      background-color: #111;
       color: white;
       border: none;
-      border-radius: 0 6px 6px 0;
+      border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
 
     .input-button:hover {
-      background-color: #2ea043;
+      background-color: #333;
     }
 
     .results {
-      width: 80%;
-      max-width: 700px;
-      margin: 0 auto;
-      background-color: #161b22;
+      background: #fff;
+      border-radius: 8px;
       padding: 20px;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      font-size: 16px;
-      color: #e6edf3;
+      max-width: 600px;
+      margin: 0 auto 20px;
       display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: left;
     }
 
-    .results .session {
+    .session {
       margin-bottom: 20px;
     }
 
-    .results strong {
-      color: #58a6ff;
-      font-weight: 600;
+    .session strong {
+      display: block;
+      margin-bottom: 8px;
     }
 
     footer {
       padding: 20px;
-      background-color: #161b22;
-      color: #8b949e;
+      background-color: #000;
+      color: #fff;
       text-align: center;
     }
 
@@ -144,29 +156,41 @@
     .social-icons i {
       margin: 0 10px;
       font-size: 20px;
-      color: #58a6ff;
-      transition: color 0.2s ease;
+      color: #fff;
     }
 
-    .social-icons i:hover {
-      color: #79c0ff;
+    @media screen and (max-width: 600px) {
+      .input-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .input-container input,
+      .input-button {
+        width: 100%;
+      }
+
+      .container h1 {
+        font-size: 1.4rem;
+      }
+
+      .container p {
+        font-size: 0.95rem;
+      }
     }
   </style>
 </head>
 <body>
+
   <header>
-    <a href="/">
-      <h1>neveryourbae</h1>
-      <h2>AIRDROP CHECKER</h2>
-    </a>
+    <h1>Initia Price Predictor</h1>
   </header>
 
   <div class="container">
-    <h1>Initia Price Predictor</h1>
-    <p>Predict Initia token value based on MCAP and FDV of TIA, DYM, and Premarket benchmarks.</p>
+    <p>Predict the price of Initia tokens based on MCAP and FDV of TIA, DYM, and Premarket tokens.</p>
 
     <div class="input-container">
-      <input type="number" id="tokenInput" placeholder="Enter your token amount" />
+      <input type="number" id="tokenInput" placeholder="Enter the amount of tokens you own" />
       <button class="input-button" onclick="calculatePrice()">Calculate</button>
     </div>
 
@@ -174,23 +198,16 @@
   </div>
 
   <footer>
-    <p>TomketLovers © 2024</p>
-    <div class="social-icons">
-      <a href="https://tomketlovers.com/" target="_blank"><i class="fas fa-globe"></i></a>
-      <a href="https://discord.com/invite/RhknZEkX" target="_blank"><i class="fab fa-discord"></i></a>
-      <a href="https://t.me/TomketOfficial" target="_blank"><i class="fab fa-telegram"></i></a>
-      <a href="https://x.com/TomketLovers" target="_blank"><i class="fab fa-twitter"></i></a>
-    </div>
+    <p>ytta © 2025</p>
   </footer>
 
   <!-- Script -->
   <script>
-    const totalSupply = 305000000;
-    const fdv = 1000000000;
-
-    const notCoinUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
-    const dogsCoinUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
-    const premarketUrl = "https://cati-last-price-api.vercel.app/api/lastPrice";
+    const totalSupply = 1000000000;
+        const fdv = 100000000;
+    const tiaCoinUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
+    const dymCoinUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
+    const premarketUrl = "https://init-api-lemon.vercel.app/api";
 
     async function getMarketCap(url) {
       try {
@@ -216,58 +233,60 @@
 
     async function calculatePrice() {
       const tokensOwned = parseFloat(document.getElementById('tokenInput').value);
+      const resultsDiv = document.getElementById('results');
 
       if (!isNaN(tokensOwned)) {
-        const mcapNot = await getMarketCap(notCoinUrl);
-        const mcapDogs = await getMarketCap(dogsCoinUrl);
+        const mcaptia = await getMarketCap(tiaCoinUrl);
+        const mcapdym = await getMarketCap(dymCoinUrl);
         const lastPricePremarket = await getPremarketPrice(premarketUrl);
 
-        if (mcapNot && mcapDogs && lastPricePremarket) {
-          const priceNot = mcapNot / totalSupply;
-          const valueNot = tokensOwned * priceNot;
+        if (mcaptia && mcapdym && lastPricePremarket) {
+          const pricePerTokentia = mcaptia / totalSupply;
+          const totalDollarstia = tokensOwned * pricePerTokentia;
 
-          const priceDogs = mcapDogs / totalSupply;
-          const valueDogs = tokensOwned * priceDogs;
+          const pricePerTokendym = mcapdym / totalSupply;
+          const totalDollarsdym = tokensOwned * pricePerTokendym;
 
           const marketcapPremarket = lastPricePremarket * totalSupply;
-          const valuePremarket = tokensOwned * lastPricePremarket;
+          const totalDollarsPremarket = tokensOwned * lastPricePremarket;
 
-          const notFdv = Math.round(priceNot * fdv);
-          const dogsFdv = Math.round(priceDogs * fdv);
+          const tiaFdv = Math.round(pricePerTokentia * fdv);
+          const dymFdv = Math.round(pricePerTokendym * fdv);
           const premarketFdv = Math.round(lastPricePremarket * fdv);
 
-          const resultsDiv = document.getElementById('results');
           resultsDiv.innerHTML = `
             <div class="session">
-              <strong>Based on NOT Market Cap</strong><br>
-              MCAP: $${mcapNot.toLocaleString()}<br>
-              FDV: $${notFdv.toLocaleString()}<br>
-              Token Price: $${priceNot.toFixed(2)}<br>
-              Your Value: $${valueNot.toFixed(2)}
+              <strong>Based on TIA Market Cap</strong>
+              Market Cap: $${mcaptia.toLocaleString()}<br>
+              FDV: $${tiaFdv.toLocaleString()}<br>
+              Token Price: $${pricePerTokentia.toFixed(2)}<br>
+              Your Value: $${totalDollarstia.toFixed(2)}
             </div>
             <div class="session">
-              <strong>Based on DOGS Market Cap</strong><br>
-              MCAP: $${mcapDogs.toLocaleString()}<br>
-              FDV: $${dogsFdv.toLocaleString()}<br>
-              Token Price: $${priceDogs.toFixed(2)}<br>
-              Your Value: $${valueDogs.toFixed(2)}
+              <strong>Based on DYM Market Cap</strong>
+              Market Cap: $${mcapdym.toLocaleString()}<br>
+              FDV: $${dymFdv.toLocaleString()}<br>
+              Token Price: $${pricePerTokendym.toFixed(2)}<br>
+              Your Value: $${totalDollarsdym.toFixed(2)}
             </div>
             <div class="session">
-              <strong>Based on Premarket</strong><br>
-              Premarket MCAP: $${marketcapPremarket.toLocaleString()}<br>
+              <strong>Based on Premarket Price</strong>
+              Market Cap: $${marketcapPremarket.toLocaleString()}<br>
               FDV: $${premarketFdv.toLocaleString()}<br>
               Token Price: $${lastPricePremarket.toFixed(2)}<br>
-              Your Value: $${valuePremarket.toFixed(2)}
+              Your Value: $${totalDollarsPremarket.toFixed(2)}
             </div>
           `;
+
           resultsDiv.style.display = "block";
         } else {
-          alert('Failed to retrieve some market data.');
+          alert("Failed to fetch data. Try again later.");
         }
       } else {
-        alert('Enter a valid number of tokens.');
+        alert("Please enter a valid token amount.");
       }
     }
   </script>
+
 </body>
 </html>
