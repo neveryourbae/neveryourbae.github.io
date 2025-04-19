@@ -128,7 +128,7 @@
 <body>
   <div class="container">
     <h1>$INIT Price Predictor</h1>
-    <p>Predict the price of Initia tokens based on MCAP and FDV of TIA, DYM, and Premarket tokens.</p>
+    <p>Prediksi harga token INIT berdasarkan MCAP TIA, DYM, BERA, IP, dan WCT.</p>
     <div class="input-container">
       <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
       <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
@@ -140,11 +140,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    const totalSupply = 1000000000; // Supply INIT
-    const fdv = 100000000; // FDV INIT
+    const totalSupply = 1000000000;
     const tiaUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
     const dymUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
-    const exchangeRateUrl = "https://v6.exchangerate-api.com/v6/f0c9907f274c72f8ebd04bd4/latest/USD"; // Ganti dengan API Key kamu
+    const beraUrl = "https://api.coinpaprika.com/v1/tickers/bera-berachain";
+    const ipUrl = "https://api.coinpaprika.com/v1/tickers/ip-story";
+    const wctUrl = "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token";
 
     async function getMarketCap(url) {
       try {
@@ -156,68 +157,80 @@
       }
     }
 
-    async function getExchangeRate() {
-      try {
-        const response = await axios.get(exchangeRateUrl);
-        return response.data.conversion_rates.IDR; // Mendapatkan nilai tukar USD ke IDR
-      } catch (error) {
-        console.error("Error fetching exchange rate:", error);
-        return null;
-      }
-    }
-
     async function supraValue() {
       const amount = parseFloat(document.getElementById('amount').value);
+      const resultsDiv = document.getElementById('results');
 
       if (!amount || amount <= 0) {
         alert('Masukkan jumlah INIT yang valid.');
         return;
       }
 
+      resultsDiv.style.display = 'none';
+      resultsDiv.innerHTML = "Loading...";
+
       try {
-        const [initRes, tiaCap, dymCap, exchangeRate] = await Promise.all([
+        const [initRes, tiaCap, dymCap, beraCap, ipCap, wctCap] = await Promise.all([
           axios.get('https://init-api-lemon.vercel.app/api'),
           getMarketCap(tiaUrl),
           getMarketCap(dymUrl),
-          getExchangeRate() // Mendapatkan nilai tukar USD ke IDR
+          getMarketCap(beraUrl),
+          getMarketCap(ipUrl),
+          getMarketCap(wctUrl)
         ]);
 
         const latestDealPrice = initRes.data.latest_deal_price;
         const initTotalUSD = amount * latestDealPrice;
-        const initTotalIDR = initTotalUSD * exchangeRate;
 
-        // Hitung berdasarkan TIA & DYM
         const tiaPrice = tiaCap / totalSupply;
         const dymPrice = dymCap / totalSupply;
+        const beraPrice = beraCap / totalSupply;
+        const ipPrice = ipCap / totalSupply;
+        const wctPrice = wctCap / totalSupply;
 
         const tiaTotalUSD = amount * tiaPrice;
-        const tiaTotalIDR = tiaTotalUSD * exchangeRate;
-
         const dymTotalUSD = amount * dymPrice;
-        const dymTotalIDR = dymTotalUSD * exchangeRate;
+        const beraTotalUSD = amount * beraPrice;
+        const ipTotalUSD = amount * ipPrice;
+        const wctTotalUSD = amount * wctPrice;
 
-        document.getElementById('results').innerHTML = `
+        resultsDiv.innerHTML = `
           <div class="result-item">
-            <h4>Total $INIT: ${Math.round(amount).toLocaleString("IDR")}</h4>
+            <h4>Total $INIT: ${Math.round(amount).toLocaleString("id-ID")}</h4>
             <p><strong>Harga Premarket (Gate.io):</strong><br> 
-            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(initTotalIDR).toLocaleString("IDR")}</p>
+            $${latestDealPrice.toFixed(5)} | Total: $${initTotalUSD.toFixed(2)}</p>
           </div>
           
           <div class="result-item">
             <h4>Berdasarkan TIA Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(tiaTotalIDR).toLocaleString("id-IDR")}</p>
+            <p><strong>Estimasi Harga:</strong> $${tiaPrice.toFixed(5)} | Total: $${tiaTotalUSD.toFixed(2)}</p>
           </div>
           
           <div class="result-item">
             <h4>Berdasarkan DYM Market Cap:</h4>
-            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)} | IDR: Rp ${Math.round(dymTotalIDR).toLocaleString("IDR")}</p>
+            <p><strong>Estimasi Harga:</strong> $${dymPrice.toFixed(5)} | Total: $${dymTotalUSD.toFixed(2)}</p>
+          </div>
+
+          <div class="result-item">
+            <h4>Berdasarkan BERA Market Cap:</h4>
+            <p><strong>Estimasi Harga:</strong> $${beraPrice.toFixed(5)} | Total: $${beraTotalUSD.toFixed(2)}</p>
+          </div>
+
+          <div class="result-item">
+            <h4>Berdasarkan IP Market Cap:</h4>
+            <p><strong>Estimasi Harga:</strong> $${ipPrice.toFixed(5)} | Total: $${ipTotalUSD.toFixed(2)}</p>
+          </div>
+
+          <div class="result-item">
+            <h4>Berdasarkan WCT Market Cap:</h4>
+            <p><strong>Estimasi Harga:</strong> $${wctPrice.toFixed(5)} | Total: $${wctTotalUSD.toFixed(2)}</p>
           </div>
         `;
-        document.getElementById('results').style.display = "block";
+        resultsDiv.style.display = "block";
       } catch (error) {
         console.error("Fetch error:", error);
-        document.getElementById('results').innerHTML = "Gagal mengambil data harga.";
-        document.getElementById('results').style.display = "block";
+        resultsDiv.innerHTML = "Gagal mengambil data harga.";
+        resultsDiv.style.display = "block";
       }
     }
   </script>
