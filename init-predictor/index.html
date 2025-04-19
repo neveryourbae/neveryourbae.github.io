@@ -1,0 +1,285 @@
+Web-nya udah keren, tinggal dipoles dikit biar lebih modern, dark mode, clean UI dan lebih konsisten dengan branding "neveryourbae" atau "TomketLovers". Aku bantu refactor full index.html versi ini ke versi yang udah styling-nya seragam dengan dark theme UI/UX modern:
+
+
+---
+
+Refactored Initia Price Predictor with Dark Theme
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Initia Price Predictor</title>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL42J6SMKN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FL42J6SMKN');
+  </script>
+
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- Styles -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 40px 20px 0;
+      text-align: left;
+    }
+
+    header a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #58a6ff;
+    }
+
+    header h2 {
+      font-size: 1rem;
+      color: #8b949e;
+      font-weight: 400;
+    }
+
+    .container {
+      text-align: center;
+      flex: 1;
+      padding: 30px 20px;
+    }
+
+    .container h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #58a6ff;
+    }
+
+    .container p {
+      margin-bottom: 30px;
+      color: #8b949e;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .input-container input {
+      padding: 12px;
+      font-size: 16px;
+      width: 60%;
+      background-color: #161b22;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      border-radius: 6px 0 0 6px;
+      outline: none;
+    }
+
+    .input-button {
+      padding: 12px 20px;
+      background-color: #238636;
+      color: white;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .input-button:hover {
+      background-color: #2ea043;
+    }
+
+    .results {
+      width: 80%;
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: #161b22;
+      padding: 20px;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      font-size: 16px;
+      color: #e6edf3;
+      display: none;
+    }
+
+    .results .session {
+      margin-bottom: 20px;
+    }
+
+    .results strong {
+      color: #58a6ff;
+      font-weight: 600;
+    }
+
+    footer {
+      padding: 20px;
+      background-color: #161b22;
+      color: #8b949e;
+      text-align: center;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .social-icons i {
+      margin: 0 10px;
+      font-size: 20px;
+      color: #58a6ff;
+      transition: color 0.2s ease;
+    }
+
+    .social-icons i:hover {
+      color: #79c0ff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/">
+      <h1>neveryourbae</h1>
+      <h2>AIRDROP CHECKER</h2>
+    </a>
+  </header>
+
+  <div class="container">
+    <h1>Initia Price Predictor</h1>
+    <p>Predict Initia token value based on MCAP and FDV of TIA, DYM, and Premarket benchmarks.</p>
+
+    <div class="input-container">
+      <input type="number" id="tokenInput" placeholder="Enter your token amount" />
+      <button class="input-button" onclick="calculatePrice()">Calculate</button>
+    </div>
+
+    <div class="results" id="results"></div>
+  </div>
+
+  <footer>
+    <p>TomketLovers © 2024</p>
+    <div class="social-icons">
+      <a href="https://tomketlovers.com/" target="_blank"><i class="fas fa-globe"></i></a>
+      <a href="https://discord.com/invite/RhknZEkX" target="_blank"><i class="fab fa-discord"></i></a>
+      <a href="https://t.me/TomketOfficial" target="_blank"><i class="fab fa-telegram"></i></a>
+      <a href="https://x.com/TomketLovers" target="_blank"><i class="fab fa-twitter"></i></a>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const totalSupply = 305000000;
+    const fdv = 1000000000;
+
+    const notCoinUrl = "https://api.coinpaprika.com/v1/tickers/tia-celestia";
+    const dogsCoinUrl = "https://api.coinpaprika.com/v1/tickers/dym-dymension";
+    const premarketUrl = "https://cati-last-price-api.vercel.app/api/lastPrice";
+
+    async function getMarketCap(url) {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.quotes.USD.market_cap;
+      } catch (error) {
+        console.error(`Error fetching market cap:`, error);
+        return null;
+      }
+    }
+
+    async function getPremarketPrice(url) {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return parseFloat(data.result.lastPrice);
+      } catch (error) {
+        console.error(`Error fetching premarket price:`, error);
+        return null;
+      }
+    }
+
+    async function calculatePrice() {
+      const tokensOwned = parseFloat(document.getElementById('tokenInput').value);
+
+      if (!isNaN(tokensOwned)) {
+        const mcapNot = await getMarketCap(notCoinUrl);
+        const mcapDogs = await getMarketCap(dogsCoinUrl);
+        const lastPricePremarket = await getPremarketPrice(premarketUrl);
+
+        if (mcapNot && mcapDogs && lastPricePremarket) {
+          const priceNot = mcapNot / totalSupply;
+          const valueNot = tokensOwned * priceNot;
+
+          const priceDogs = mcapDogs / totalSupply;
+          const valueDogs = tokensOwned * priceDogs;
+
+          const marketcapPremarket = lastPricePremarket * totalSupply;
+          const valuePremarket = tokensOwned * lastPricePremarket;
+
+          const notFdv = Math.round(priceNot * fdv);
+          const dogsFdv = Math.round(priceDogs * fdv);
+          const premarketFdv = Math.round(lastPricePremarket * fdv);
+
+          const resultsDiv = document.getElementById('results');
+          resultsDiv.innerHTML = `
+            <div class="session">
+              <strong>Based on NOT Market Cap</strong><br>
+              MCAP: $${mcapNot.toLocaleString()}<br>
+              FDV: $${notFdv.toLocaleString()}<br>
+              Token Price: $${priceNot.toFixed(2)}<br>
+              Your Value: $${valueNot.toFixed(2)}
+            </div>
+            <div class="session">
+              <strong>Based on DOGS Market Cap</strong><br>
+              MCAP: $${mcapDogs.toLocaleString()}<br>
+              FDV: $${dogsFdv.toLocaleString()}<br>
+              Token Price: $${priceDogs.toFixed(2)}<br>
+              Your Value: $${valueDogs.toFixed(2)}
+            </div>
+            <div class="session">
+              <strong>Based on Premarket</strong><br>
+              Premarket MCAP: $${marketcapPremarket.toLocaleString()}<br>
+              FDV: $${premarketFdv.toLocaleString()}<br>
+              Token Price: $${lastPricePremarket.toFixed(2)}<br>
+              Your Value: $${valuePremarket.toFixed(2)}
+            </div>
+          `;
+          resultsDiv.style.display = "block";
+        } else {
+          alert('Failed to retrieve some market data.');
+        }
+      } else {
+        alert('Enter a valid number of tokens.');
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+---
+
+Kalau kamu mau versi TailwindCSS, Next.js, atau mau gue bantu hosting, tinggal bilang aja. Mau nambah chart, breakdown ROI, atau share-to-Twitter button pun bisa.
+
