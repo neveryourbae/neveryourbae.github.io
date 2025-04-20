@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -129,25 +129,28 @@
 <body>
   <div class="container">
     <h1>$INIT Price Predictor</h1>
-    <p>Prediksi harga token Initia berdasarkan MCAP & FDV dari TIA, DYM, BERA, IP, dan WCT</p>
+    <p>Prediksi harga token Initia berdasarkan MCAP & FDV dari TIA, DYM, BERA, IP, WCT, dan NILLION</p>
     <div class="input-container">
       <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
       <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
     </div>
-    <div class="results" id="results" style="display: none;"></div>
+    <div class="results" id="results" style="display: none;">
+      <div id="initAmountInfo" class="result-item" style="background: #1f1f1f;"></div>
+    </div>
   </div>
 
   <footer>$INIT SAYA</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    const totalSupply = 148750000; // Supply INIT
+    const totalSupply = 1000000000; // Total supply INIT
     const urls = {
       tia: "https://api.coinpaprika.com/v1/tickers/tia-celestia",
       dym: "https://api.coinpaprika.com/v1/tickers/dym-dymension",
       bera: "https://api.coinpaprika.com/v1/tickers/bera-berachain",
       ip: "https://api.coinpaprika.com/v1/tickers/ip-story",
-      wct: "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token"
+      wct: "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token",
+      nillion: "https://api.coinpaprika.com/v1/tickers/nil-nillion"
     };
 
     async function getMarketCap(url) {
@@ -168,17 +171,24 @@
       }
 
       const resultsDiv = document.getElementById('results');
+      const initAmountInfo = document.getElementById('initAmountInfo');
       resultsDiv.style.display = "block";
-      resultsDiv.innerHTML = "Mengambil data...";
+      resultsDiv.innerHTML = `
+        <div id="initAmountInfo" class="result-item" style="background: #1f1f1f;">
+          <h4>Jumlah $INIT Kamu</h4>
+          <p><strong>${amount.toLocaleString('id-ID')} $INIT</strong></p>
+        </div>
+      `;
 
       try {
-        const [initRes, tiaCap, dymCap, beraCap, ipCap, wctCap] = await Promise.all([
+        const [initRes, tiaCap, dymCap, beraCap, ipCap, wctCap, nillionCap] = await Promise.all([
           axios.get('https://init-api-lemon.vercel.app/api'),
           getMarketCap(urls.tia),
           getMarketCap(urls.dym),
           getMarketCap(urls.bera),
           getMarketCap(urls.ip),
-          getMarketCap(urls.wct)
+          getMarketCap(urls.wct),
+          getMarketCap(urls.nillion)
         ]);
 
         const latestDealPrice = initRes.data.latest_deal_price;
@@ -189,10 +199,11 @@
           { name: "Berdasarkan DYM Market Cap", price: dymCap / totalSupply },
           { name: "Berdasarkan BERA Market Cap", price: beraCap / totalSupply },
           { name: "Berdasarkan IP Market Cap", price: ipCap / totalSupply },
-          { name: "Berdasarkan WCT Market Cap", price: wctCap / totalSupply }
+          { name: "Berdasarkan WCT Market Cap", price: wctCap / totalSupply },
+          { name: "Berdasarkan NILLION Market Cap", price: nillionCap / totalSupply }
         ];
 
-        resultsDiv.innerHTML = data.map(d => `
+        resultsDiv.innerHTML += data.map(d => `
           <div class="result-item">
             <h4>${d.name}</h4>
             <p><strong>Estimasi Harga:</strong> $${d.price.toFixed(5)}</p>
@@ -201,7 +212,7 @@
         `).join('');
       } catch (error) {
         console.error("Fetch error:", error);
-        resultsDiv.innerHTML = "Gagal mengambil data harga.";
+        resultsDiv.innerHTML = "<p>Gagal mengambil data harga.</p>";
       }
     }
   </script>
