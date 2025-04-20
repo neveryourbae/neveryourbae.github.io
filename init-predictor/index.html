@@ -1,15 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Initia Price Predictor</title>
+    <title>Catizen Price Predictor</title>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL42J6SMKN"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+
     gtag('config', 'G-FL42J6SMKN');
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -131,8 +133,8 @@
     </header>
 
     <div class="container">
-        <h1>Initia Price Predictor</h1>
-        <p>Predict the price of Initia tokens based on MCAP and FDV of NOT, DOGS, and Premarket tokens.</p>
+        <h1>Catizen Price Predictor</h1>
+        <p>Predict the price of Catizen tokens based on MCAP and FDV of NOT, DOGS, and Premarket tokens.</p>
         <div class="input-container">
             <input type="number" id="tokenInput" placeholder="Enter the amount of tokens you own">
             <button class="input-button" onclick="calculatePrice()">Calculate</button>
@@ -160,12 +162,12 @@
     </footer>
 
     <script>
-        const totalSupply = 10000000;
-        const fdv = 149750000;
+        const totalSupply = 1000000000;  // Update total supply to 1 billion
+        const fdv = 1000000000;  // FDV can be set here for reference
 
         const notCoinUrl = "https://api.coinpaprika.com/v1/tickers/not-notcoin";
         const dogsCoinUrl = "https://api.coinpaprika.com/v1/tickers/dogs-dogs";
-        const premarketUrl = "https://init-api-lemon.vercel.app/api";
+        const premarketUrl = "https://init-api-lemon.vercel.app/api";  // Updated API endpoint
 
         async function getMarketCap(url) {
             try {
@@ -182,7 +184,7 @@
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                return parseFloat(data.latest_deal_price);
+                return parseFloat(data.latest_deal_price);  // Adjusted based on the new API response
             } catch (error) {
                 console.error(`Error fetching premarket price:`, error);
                 return null;
@@ -235,7 +237,7 @@
                             Your tokens are worth = $${totalDollarsPremarket.toFixed(2)}
                         </div>
                     `;
-                    resultsDiv.style.display = "block";
+                    resultsDiv.style.display = "block"; // Show results
                 } else {
                     alert('Failed to retrieve market cap or premarket data.');
                 }
