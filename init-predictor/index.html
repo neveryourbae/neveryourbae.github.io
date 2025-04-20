@@ -1,211 +1,236 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>$INIT Price Predictor</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catizen Price Predictor</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL42J6SMKN"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FL42J6SMKN');
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: #1f1f1f;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #1f1f1f;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
 
-    .container h1 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      color: #ffffff;
-    }
+        .container h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
 
-    .container p {
-      font-size: 1.1rem;
-      color: #bbb;
-      margin-bottom: 30px;
-    }
+        .container p {
+            font-size: 1.1rem;
+            color: #bbb;
+            margin-bottom: 30px;
+        }
 
-    .input-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-direction: column;
-    }
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
 
-    .input-container input {
-      padding: 14px;
-      font-size: 1rem;
-      border-radius: 10px;
-      border: 1px solid #333;
-      width: 100%;
-      background-color: #333;
-      color: #fff;
-    }
+        .input-container input {
+            padding: 14px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 1px solid #333;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+        }
 
-    .input-button {
-      background-color: #6200ea;
-      color: white;
-      padding: 12px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+        .input-button {
+            background-color: #6200ea;
+            color: white;
+            padding: 12px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
 
-    .input-button:hover {
-      background-color: #3700b3;
-    }
+        .input-button:hover {
+            background-color: #3700b3;
+        }
 
-    .results {
-      background: #333;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-      font-size: 1rem;
-    }
+        .results {
+            background: #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
 
-    .result-item {
-      margin-bottom: 20px;
-      background: #2a2a2a;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      text-align: center;
-    }
+        .result-item {
+            margin-bottom: 20px;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
 
-    .result-item h4 {
-      margin-bottom: 10px;
-      color: #ffffff;
-      font-size: 1.2rem;
-    }
+        .result-item h4 {
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-size: 1.2rem;
+        }
 
-    .result-item p {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-      color: #ccc;
-    }
+        .result-item p {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            color: #ccc;
+        }
 
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 0.85rem;
-      color: #aaa;
-    }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
 
-    @media screen and (max-width: 480px) {
-      .container {
-        padding: 20px 15px;
-      }
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
 
-      .container h1 {
-        font-size: 1.6rem;
-      }
-    }
-  </style>
+            .container h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>$INIT Price Predictor</h1>
-    <p>Prediksi harga token Initia berdasarkan MCAP & FDV dari TIA, DYM, BERA, IP, dan WCT</p>
-    <div class="input-container">
-      <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
-      <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
+    <div class="container">
+        <h1>Catizen Price Predictor</h1>
+        <p>Predict the price of Catizen tokens based on MCAP and FDV of NOT, DOGS, and Premarket tokens.</p>
+        <div class="input-container">
+            <input type="number" id="tokenInput" placeholder="Enter the amount of tokens you own" />
+            <button class="input-button" onclick="calculatePrice()">Calculate</button>
+        </div>
+
+        <div class="results" id="results" style="display: none;"></div>
     </div>
-    <div class="results" id="results" style="display: none;"></div>
-  </div>
 
-  <footer>$INIT SAYA</footer>
+    <footer>TomketLovers © 2024</footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    const totalSupply = 1000000000; // Supply INIT
-    const urls = {
-      tia: "https://api.coinpaprika.com/v1/tickers/tia-celestia",
-      dym: "https://api.coinpaprika.com/v1/tickers/dym-dymension",
-      bera: "https://api.coinpaprika.com/v1/tickers/bera-berachain",
-      ip: "https://api.coinpaprika.com/v1/tickers/ip-story",
-      wct: "https://api.coinpaprika.com/v1/tickers/wct-walletconnect-token"
-    };
+    <script>
+        const totalSupply = 305000000;
+        const fdv = 1000000000;
 
-    async function getMarketCap(url) {
-      try {
-        const res = await axios.get(url);
-        return res.data.quotes.USD.market_cap;
-      } catch (err) {
-        console.error("Market cap fetch error:", err);
-        return null;
-      }
-    }
+        const notCoinUrl = "https://api.coinpaprika.com/v1/tickers/not-notcoin";
+        const dogsCoinUrl = "https://api.coinpaprika.com/v1/tickers/dogs-dogs";
+        const premarketUrl = "https://cati-last-price-api.vercel.app/api/lastPrice";
 
-    async function supraValue() {
-      const amount = parseFloat(document.getElementById('amount').value);
-      if (!amount || amount <= 0) {
-        alert('Masukkan jumlah INIT yang valid.');
-        return;
-      }
+        async function getMarketCap(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.quotes.USD.market_cap;
+            } catch (error) {
+                console.error(`Error fetching market cap:`, error);
+                return null;
+            }
+        }
 
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.style.display = "block";
-      resultsDiv.innerHTML = "Mengambil data...";
+        async function getPremarketPrice(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return parseFloat(data.result.lastPrice);
+            } catch (error) {
+                console.error(`Error fetching premarket price:`, error);
+                return null;
+            }
+        }
 
-      try {
-        const [initRes, tiaCap, dymCap, beraCap, ipCap, wctCap] = await Promise.all([
-          axios.get('https://init-api-lemon.vercel.app/api'),
-          getMarketCap(urls.tia),
-          getMarketCap(urls.dym),
-          getMarketCap(urls.bera),
-          getMarketCap(urls.ip),
-          getMarketCap(urls.wct)
-        ]);
+        async function calculatePrice() {
+            const tokensOwned = parseFloat(document.getElementById('tokenInput').value);
 
-        const latestDealPrice = initRes.data.latest_deal_price;
+            if (!isNaN(tokensOwned)) {
+                const mcapNot = await getMarketCap(notCoinUrl);
+                const mcapDogs = await getMarketCap(dogsCoinUrl);
+                const lastPricePremarket = await getPremarketPrice(premarketUrl);
 
-        const data = [
-          { name: "Premarket (Gate.io)", price: latestDealPrice },
-          { name: "Berdasarkan TIA Market Cap", price: tiaCap / totalSupply },
-          { name: "Berdasarkan DYM Market Cap", price: dymCap / totalSupply },
-          { name: "Berdasarkan BERA Market Cap", price: beraCap / totalSupply },
-          { name: "Berdasarkan IP Market Cap", price: ipCap / totalSupply },
-          { name: "Berdasarkan WCT Market Cap", price: wctCap / totalSupply }
-        ];
+                if (mcapNot && mcapDogs && lastPricePremarket) {
+                    const pricePerTokenNot = mcapNot / totalSupply;
+                    const totalDollarsNot = tokensOwned * pricePerTokenNot;
 
-        resultsDiv.innerHTML = data.map(d => `
-          <div class="result-item">
-            <h4>${d.name}</h4>
-            <p><strong>Estimasi Harga:</strong> $${d.price.toFixed(5)}</p>
-            <p><strong>Total:</strong> $${(d.price * amount).toFixed(2)}</p>
-          </div>
-        `).join('');
-      } catch (error) {
-        console.error("Fetch error:", error);
-        resultsDiv.innerHTML = "Gagal mengambil data harga.";
-      }
-    }
-  </script>
+                    const pricePerTokenDogs = mcapDogs / totalSupply;
+                    const totalDollarsDogs = tokensOwned * pricePerTokenDogs;
+
+                    const marketcapPremarket = lastPricePremarket * totalSupply;
+                    const totalDollarsPremarket = tokensOwned * lastPricePremarket;
+
+                    const notFdv = Math.round(pricePerTokenNot * fdv);
+                    const dogsFdv = Math.round(pricePerTokenDogs * fdv);
+                    const premarketFdv = Math.round(lastPricePremarket * fdv);
+
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = `
+                        <div class="result-item">
+                            <h4>Results based on NOT MCAP</h4>
+                            <p><strong>Market Cap NOT:</strong> $${mcapNot.toLocaleString()}</p>
+                            <p><strong>FDV NOT:</strong> $${notFdv.toLocaleString()}</p>
+                            <p><strong>Price per token:</strong> $${pricePerTokenNot.toFixed(2)}</p>
+                            <p><strong>Your tokens are worth:</strong> $${totalDollarsNot.toFixed(2)}</p>
+                        </div>
+                        <div class="result-item">
+                            <h4>Results based on DOGS MCAP</h4>
+                            <p><strong>Market Cap DOGS:</strong> $${mcapDogs.toLocaleString()}</p>
+                            <p><strong>FDV DOGS:</strong> $${dogsFdv.toLocaleString()}</p>
+                            <p><strong>Price per token:</strong> $${pricePerTokenDogs.toFixed(2)}</p>
+                            <p><strong>Your tokens are worth:</strong> $${totalDollarsDogs.toFixed(2)}</p>
+                        </div>
+                        <div class="result-item">
+                            <h4>Results based on Premarket</h4>
+                            <p><strong>Market Cap Premarket:</strong> $${marketcapPremarket.toLocaleString()}</p>
+                            <p><strong>FDV Premarket:</strong> $${premarketFdv.toLocaleString()}</p>
+                            <p><strong>Price per token:</strong> $${lastPricePremarket.toFixed(2)}</p>
+                            <p><strong>Your tokens are worth:</strong> $${totalDollarsPremarket.toFixed(2)}</p>
+                        </div>
+                    `;
+                    resultsDiv.style.display = "block"; // Show results
+                } else {
+                    alert('Failed to retrieve market cap or premarket data.');
+                }
+            } else {
+                alert('Please enter a valid token amount.');
+            }
+        }
+    </script>
 </body>
 </html>
