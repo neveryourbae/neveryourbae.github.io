@@ -93,7 +93,7 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      text-align: center;
+      text-align: left;
     }
 
     .result-item h4 {
@@ -103,8 +103,8 @@
     }
 
     .result-item p {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
       color: #ccc;
     }
 
@@ -129,7 +129,7 @@
 <body>
   <div class="container">
     <h1>$INIT Price Predictor</h1>
-    <p>Prediksi harga token Initia berdasarkan MCAP dari TIA, BERA, IP, WCT, NILLION, MOVE, VANA, SUI, HYPE, APT, dan SEI</p>
+    <p>Prediksi harga token Initia berdasarkan MCAP dan FDV dari project lain</p>
     <div class="input-container">
       <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
       <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
@@ -143,7 +143,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    const totalSupply = 1000000000;
+    const totalSupply = 1000000000; // Total supply untuk $INIT
+    const fdv = 149750000; // FDV untuk $INIT (seperti yang diberikan)
+    
+    // URL untuk mendapatkan data dari API coinpaprika
     const urls = {
       tia: "https://api.coinpaprika.com/v1/tickers/tia-celestia",
       bera: "https://api.coinpaprika.com/v1/tickers/bera-berachain",
@@ -161,7 +164,7 @@
     async function getMarketCap(url) {
       try {
         const res = await axios.get(url);
-        return res.data.quotes.USD.market_cap;
+        return res.data.quotes.USD;
       } catch (err) {
         console.error("Market cap fetch error:", err);
         return null;
@@ -185,8 +188,7 @@
       `;
 
       try {
-        const [initRes, tiaCap, beraCap, ipCap, wctCap, nillionCap, moveCap, vanaCap, suiCap, hypeCap, aptCap, seiCap] = await Promise.all([
-          axios.get('https://init-api-lemon.vercel.app/api'),
+        const responses = await Promise.all([
           getMarketCap(urls.tia),
           getMarketCap(urls.bera),
           getMarketCap(urls.ip),
@@ -200,28 +202,27 @@
           getMarketCap(urls.sei)
         ]);
 
-        const latestDealPrice = initRes.data.latest_deal_price;
-
         const data = [
-          { name: "Premarket (Gate.io)", price: latestDealPrice },
-          { name: "Berdasarkan TIA Market Cap", price: tiaCap / totalSupply },
-          { name: "Berdasarkan BERA Market Cap", price: beraCap / totalSupply },
-          { name: "Berdasarkan IP Market Cap", price: ipCap / totalSupply },
-          { name: "Berdasarkan WCT Market Cap", price: wctCap / totalSupply },
-          { name: "Berdasarkan NILLION Market Cap", price: nillionCap / totalSupply },
-          { name: "Berdasarkan MOVE Market Cap", price: moveCap / totalSupply },
-          { name: "Berdasarkan VANA Market Cap", price: vanaCap / totalSupply },
-          { name: "Berdasarkan SUI Market Cap", price: suiCap / totalSupply },
-          { name: "Berdasarkan HYPE Market Cap", price: hypeCap / totalSupply },
-          { name: "Berdasarkan APT Market Cap", price: aptCap / totalSupply },
-          { name: "Berdasarkan SEI Market Cap", price: seiCap / totalSupply }
+          { name: "TIA (Celestia)", marketCap: responses[0].market_cap, price: responses[0].price, fdv: fdv },
+          { name: "BERA (Berachain)", marketCap: responses[1].market_cap, price: responses[1].price, fdv: fdv },
+          { name: "IP (Story)", marketCap: responses[2].market_cap, price: responses[2].price, fdv: fdv },
+          { name: "WCT (WalletConnect)", marketCap: responses[3].market_cap, price: responses[3].price, fdv: fdv },
+          { name: "NIL (NILLION)", marketCap: responses[4].market_cap, price: responses[4].price, fdv: fdv },
+          { name: "MOVE (Movement)", marketCap: responses[5].market_cap, price: responses[5].price, fdv: fdv },
+          { name: "VANA", marketCap: responses[6].market_cap, price: responses[6].price, fdv: fdv },
+          { name: "SUI", marketCap: responses[7].market_cap, price: responses[7].price, fdv: fdv },
+          { name: "HYPE (Hyperliquid)", marketCap: responses[8].market_cap, price: responses[8].price, fdv: fdv },
+          { name: "APT (Aptos)", marketCap: responses[9].market_cap, price: responses[9].price, fdv: fdv },
+          { name: "SEI", marketCap: responses[10].market_cap, price: responses[10].price, fdv: fdv }
         ];
 
         resultsDiv.innerHTML += data.map(d => `
           <div class="result-item">
-            <h4>${d.name}</h4>
-            <p><strong>Estimasi Harga:</strong> $${d.price.toFixed(5)}</p>
-            <p><strong>Total:</strong> $${(d.price * amount).toFixed(2)}</p>
+            <h4>Results based on ${d.name}</h4>
+            <p><strong>Market Cap:</strong> $${d.marketCap.toLocaleString()}</p>
+            <p><strong>FDV:</strong> $${d.fdv.toLocaleString()}</p>
+            <p><strong>Price per token:</strong> $${d.price.toFixed(5)}</p>
+            <p><strong>Your tokens are worth:</strong> $${(d.price * amount).toFixed(2)}</p>
           </div>
         `).join('');
       } catch (error) {
