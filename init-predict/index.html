@@ -129,7 +129,7 @@
 <body>
   <div class="container">
     <h1>$INIT Price Predictor</h1>
-    <p>Prediksi harga token Initia berdasarkan MCAP dari TIA, BERA, IP, WCT, NILLION, MOVE, VANA, SUI, HYPE, APT, SEI, dan XION</p>
+    <p>Prediksi harga token Initia berdasarkan MCAP dari TIA, BERA, IP, WCT, NILLION, MOVE, VANA, SUI, HYPE, APT, dan SEI</p>
     <div class="input-container">
       <input type="number" id="amount" placeholder="Masukkan jumlah $INIT kamu" />
       <button class="input-button" onclick="supraValue()"><i class="fas fa-search"></i> Hitung</button>
@@ -143,7 +143,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    const totalSupply = 148750000;
+    const totalSupply = 1000000000;
     const urls = {
       tia: "https://api.coinpaprika.com/v1/tickers/tia-celestia",
       bera: "https://api.coinpaprika.com/v1/tickers/bera-berachain",
@@ -155,8 +155,7 @@
       sui: "https://api.coinpaprika.com/v1/tickers/sui-sui",
       hype: "https://api.coinpaprika.com/v1/tickers/hype-hyperliquid",
       apt: "https://api.coinpaprika.com/v1/tickers/apt-aptos",
-      sei: "https://api.coinpaprika.com/v1/tickers/sei-sei",
-      xion: "https://api.coinpaprika.com/v1/tickers/xion-xion"
+      sei: "https://api.coinpaprika.com/v1/tickers/sei-sei"
     };
 
     async function getMarketCap(url) {
@@ -186,7 +185,7 @@
       `;
 
       try {
-        const [initRes, tiaCap, beraCap, ipCap, wctCap, nillionCap, moveCap, vanaCap, suiCap, hypeCap, aptCap, seiCap, xionCap] = await Promise.all([
+        const [initRes, tiaCap, beraCap, ipCap, wctCap, nillionCap, moveCap, vanaCap, suiCap, hypeCap, aptCap, seiCap] = await Promise.all([
           axios.get('https://init-api-lemon.vercel.app/api'),
           getMarketCap(urls.tia),
           getMarketCap(urls.bera),
@@ -198,8 +197,7 @@
           getMarketCap(urls.sui),
           getMarketCap(urls.hype),
           getMarketCap(urls.apt),
-          getMarketCap(urls.sei),
-          getMarketCap(urls.xion)
+          getMarketCap(urls.sei)
         ]);
 
         const latestDealPrice = initRes.data.latest_deal_price;
@@ -216,8 +214,7 @@
           { name: "Berdasarkan SUI Market Cap", price: suiCap / totalSupply },
           { name: "Berdasarkan HYPE Market Cap", price: hypeCap / totalSupply },
           { name: "Berdasarkan APT Market Cap", price: aptCap / totalSupply },
-          { name: "Berdasarkan SEI Market Cap", price: seiCap / totalSupply },
-          { name: "Berdasarkan XION Market Cap", price: xionCap / totalSupply }
+          { name: "Berdasarkan SEI Market Cap", price: seiCap / totalSupply }
         ];
 
         resultsDiv.innerHTML += data.map(d => `
