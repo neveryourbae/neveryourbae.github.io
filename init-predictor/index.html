@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catizen Price Predictor</title>
+    <title>Initia Price Predictor</title>
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL42J6SMKN"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,137 +24,148 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: #f4f4f4;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 20px;
             min-height: 100vh;
         }
 
+        header {
+            margin-left: 20vw;
+            margin-top: 10vh;
+        }
+
+        header a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-size: x-large;
+        }
+        header h2 {
+            margin-bottom: 10px;
+            font-size: large;
+        }
+
         .container {
-            max-width: 700px;
-            margin: auto;
-            background: #1f1f1f;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            margin-top: 10px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .container h1 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #ffffff;
-        }
-
-        .container p {
-            font-size: 1.1rem;
-            color: #bbb;
-            margin-bottom: 30px;
+        .container h1, p {
+            margin-bottom: 10px;
         }
 
         .input-container {
             display: flex;
-            gap: 10px;
+            justify-content: center;
             margin-bottom: 20px;
-            flex-direction: column;
         }
 
         .input-container input {
-            padding: 14px;
-            font-size: 1rem;
-            border-radius: 10px;
-            border: 1px solid #333;
-            width: 100%;
-            background-color: #333;
-            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            border: 1px solid #ccc;
         }
 
         .input-button {
-            background-color: #6200ea;
-            color: white;
-            padding: 12px;
-            font-size: 1rem;
+            padding: 10px;
+            background-color: #ccc;
             border: none;
-            border-radius: 10px;
             cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .input-button:hover {
-            background-color: #3700b3;
         }
 
         .results {
-            background: #333;
-            padding: 20px;
-            border-radius: 12px;
+            width: 62%;
+            margin-left: auto;
+            margin-right: auto;
             margin-top: 20px;
-            font-size: 1rem;
-        }
-
-        .result-item {
-            margin-bottom: 20px;
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            text-align: left;
-        }
-
-        .result-item h4 {
+            display: none;
+            padding: 15px;
+            border: 2px solid black;
+            border-radius: 5px;
             margin-bottom: 10px;
-            color: #ffffff;
-            font-size: 1.2rem;
+            text-align: left;
+            font-size: 16px;
+            color: black;
         }
 
-        .result-item p {
-            font-size: 1.05rem;
-            margin-bottom: 6px;
-            color: #ccc;
+        .results p, h3 {
+            margin-bottom: 10px;
         }
 
         footer {
-            margin-top: 40px;
+            margin-top: auto;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
             text-align: center;
-            font-size: 0.85rem;
-            color: #aaa;
         }
 
-        @media screen and (max-width: 480px) {
-            .container {
-                padding: 20px 15px;
-            }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
 
-            .container h1 {
-                font-size: 1.6rem;
-            }
+        .social-icons i {
+            margin: 0 10px;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+    <header>
+        <a href="/">
+            <h1>TOMKETLOVERS</h1>
+            <h2>AIRDROP CHECKER</h2>
+        </a>
+    </header>
+
     <div class="container">
-        <h1>Catizen Price Predictor</h1>
-        <p>Predict the price of Catizen tokens based on MCAP and FDV of NOT, DOGS, and Premarket tokens.</p>
+        <h1>Initia Price Predictor</h1>
+        <p>Predict the price of Initia tokens based on MCAP and FDV of NOT, DOGS, and Premarket tokens.</p>
         <div class="input-container">
-            <input type="number" id="tokenInput" placeholder="Enter the amount of tokens you own" />
+            <input type="number" id="tokenInput" placeholder="Enter the amount of tokens you own">
             <button class="input-button" onclick="calculatePrice()">Calculate</button>
         </div>
-
-        <div class="results" id="results" style="display: none;"></div>
+        
+        <div class="results" id="results"></div>
     </div>
 
-    <footer>TomketLovers © 2024</footer>
+    <footer>
+        <p>TomketLovers © 2024</p>
+        <div class="social-icons">
+            <a href="https://tomketlovers.com/" target="_blank">
+                <i class="fa-solid fa-globe" alt="Website"></i> 
+            </a>
+            <a href="https://discord.com/invite/RhknZEkX" target="_blank">
+                <i class="fab fa-discord" alt="Discord"></i> 
+            </a>
+            <a href="https://t.me/TomketOfficial" target="_blank">
+                <i class="fab fa-telegram" alt="Telegram"></i> 
+            </a>
+            <a href="https://x.com/TomketLovers" target="_blank">
+                <i class="fa-brands fa-twitter" alt="Twitter"></i> 
+            </a>
+        </div>
+    </footer>
 
     <script>
-        const totalSupply = 305000000;
-        const fdv = 1000000000;
+        const totalSupply = 10000000;
+        const fdv = 149750000;
 
         const notCoinUrl = "https://api.coinpaprika.com/v1/tickers/not-notcoin";
         const dogsCoinUrl = "https://api.coinpaprika.com/v1/tickers/dogs-dogs";
-        const premarketUrl = "https://cati-last-price-api.vercel.app/api/lastPrice";
+        const premarketUrl = "https://init-api-lemon.vercel.app/api";
 
         async function getMarketCap(url) {
             try {
@@ -170,7 +182,7 @@
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                return parseFloat(data.result.lastPrice);
+                return parseFloat(data.latest_deal_price);
             } catch (error) {
                 console.error(`Error fetching premarket price:`, error);
                 return null;
@@ -201,29 +213,29 @@
 
                     const resultsDiv = document.getElementById('results');
                     resultsDiv.innerHTML = `
-                        <div class="result-item">
-                            <h4>Results based on NOT MCAP</h4>
-                            <p><strong>Market Cap NOT:</strong> $${mcapNot.toLocaleString()}</p>
-                            <p><strong>FDV NOT:</strong> $${notFdv.toLocaleString()}</p>
-                            <p><strong>Price per token:</strong> $${pricePerTokenNot.toFixed(2)}</p>
-                            <p><strong>Your tokens are worth:</strong> $${totalDollarsNot.toFixed(2)}</p>
+                        <div class="session">
+                            <strong>Results based on NOT MCAP</strong><br>
+                            Market Cap NOT = $${mcapNot.toLocaleString()}<br>
+                            FDV NOT = $${notFdv.toLocaleString()}<br>
+                            Price per token = $${pricePerTokenNot.toFixed(2)}<br>
+                            Your tokens are worth = $${totalDollarsNot.toFixed(2)}
                         </div>
-                        <div class="result-item">
-                            <h4>Results based on DOGS MCAP</h4>
-                            <p><strong>Market Cap DOGS:</strong> $${mcapDogs.toLocaleString()}</p>
-                            <p><strong>FDV DOGS:</strong> $${dogsFdv.toLocaleString()}</p>
-                            <p><strong>Price per token:</strong> $${pricePerTokenDogs.toFixed(2)}</p>
-                            <p><strong>Your tokens are worth:</strong> $${totalDollarsDogs.toFixed(2)}</p>
+                        <div class="session">
+                            <strong>Results based on DOGS MCAP</strong><br>
+                            Market Cap DOGS = $${mcapDogs.toLocaleString()}<br>
+                            FDV DOGS = $${dogsFdv.toLocaleString()}<br>
+                            Price per token = $${pricePerTokenDogs.toFixed(2)}<br>
+                            Your tokens are worth = $${totalDollarsDogs.toFixed(2)}
                         </div>
-                        <div class="result-item">
-                            <h4>Results based on Premarket</h4>
-                            <p><strong>Market Cap Premarket:</strong> $${marketcapPremarket.toLocaleString()}</p>
-                            <p><strong>FDV Premarket:</strong> $${premarketFdv.toLocaleString()}</p>
-                            <p><strong>Price per token:</strong> $${lastPricePremarket.toFixed(2)}</p>
-                            <p><strong>Your tokens are worth:</strong> $${totalDollarsPremarket.toFixed(2)}</p>
+                        <div class="session">
+                            <strong>Results based on Premarket</strong><br>
+                            Market Cap Premarket = $${marketcapPremarket.toLocaleString()}<br>
+                            FDV Premarket = $${premarketFdv.toLocaleString()}<br>
+                            Price per token = $${lastPricePremarket.toFixed(2)}<br>
+                            Your tokens are worth = $${totalDollarsPremarket.toFixed(2)}
                         </div>
                     `;
-                    resultsDiv.style.display = "block"; // Show results
+                    resultsDiv.style.display = "block";
                 } else {
                     alert('Failed to retrieve market cap or premarket data.');
                 }
