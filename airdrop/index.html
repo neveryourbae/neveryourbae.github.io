@@ -1,97 +1,68 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Input Garapan Airdrop</title>
   <style>
-    :root {
-      --bg-light: #f9f9f9;
-      --bg-dark: #121212;
-      --text-light: #333;
-      --text-dark: #f9f9f9;
-      --primary-light: #4caf50;
-      --primary-dark: #388e3c;
-      --border-light: #ccc;
-      --border-dark: #444;
-    }
-
     body {
       font-family: sans-serif;
       padding: 1rem;
-      background-color: var(--bg-light);
-      color: var(--text-light);
-      transition: background-color 0.3s, color 0.3s;
+      background: #f9f9f9;
     }
-
-    .dark-mode {
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
-    }
-
     h1 {
       text-align: center;
     }
-
     form {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
       margin-bottom: 1rem;
     }
-
     input, select, button {
       padding: 0.5rem;
       font-size: 1rem;
-      border: 1px solid var(--border-light);
-      border-radius: 4px;
     }
-
-    button {
-      background-color: var(--primary-light);
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: var(--primary-dark);
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.9rem;
     }
-
     th, td {
-      border: 1px solid var(--border-light);
+      border: 1px solid #ccc;
       padding: 0.4rem;
       text-align: left;
     }
-
     .actions button {
       margin-right: 0.3rem;
     }
-
-    .theme-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.5rem;
-      background-color: var(--primary-light);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .theme-toggle:hover {
-      background-color: var(--primary-dark);
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-bottom: 1rem;
+        background: #fff;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+      }
+      td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+      }
     }
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
   <h1>Input Garapan Airdrop</h1>
   <form id="airdrop-form">
     <input type="text" id="project" placeholder="Project" required />
@@ -136,23 +107,21 @@
   <script>
     const form = document.getElementById('airdrop-form');
     const tableBody = document.querySelector('#airdrop-table tbody');
-    const themeToggle = document.getElementById('theme-toggle');
     let data = JSON.parse(localStorage.getItem('airdropData')) || [];
-    let isDarkMode = localStorage.getItem('theme') === 'dark';
 
     function renderTable() {
       tableBody.innerHTML = '';
       data.forEach((entry, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${entry.project}</td>
-          <td>${entry.type}</td>
-          <td>${entry.status}</td>
-          <td>${entry.date}</td>
-          <td>${entry.wallet}</td>
-          <td><a href="${entry.link}" target="_blank">Link</a></td>
-          <td class="actions">
+          <td data-label="Nomor">${index + 1}</td>
+          <td data-label="Project">${entry.project}</td>
+          <td data-label="Keterangan">${entry.type}</td>
+          <td data-label="Status">${entry.status}</td>
+          <td data-label="Tanggal">${entry.date}</td>
+          <td data-label="Wallet">${entry.wallet}</td>
+          <td data-label="Link"><a href="${entry.link}" target="_blank">Link</a></td>
+          <td data-label="Aksi" class="actions">
             <button onclick="editEntry(${index})">Edit</button>
             <button onclick="deleteEntry(${index})">Hapus</button>
           </td>
@@ -165,15 +134,6 @@
       localStorage.setItem('airdropData', JSON.stringify(data));
     }
 
-    function toggleTheme() {
-      isDarkMode = !isDarkMode;
-      document.body.classList.toggle('dark-mode', isDarkMode);
-      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-      themeToggle.textContent = isDarkMode ? '☀️' : '🌙';
-    }
-
-    themeToggle.addEventListener('click', toggleTheme);
-
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const newEntry = {
@@ -182,7 +142,7 @@
         status: form.status.value,
         date: form.date.value,
         wallet: form.wallet.value,
-        link: form.link.value,
+        link: form.link.value
       };
       if (form.dataset.editIndex !== undefined) {
         data[form.dataset.editIndex] = newEntry;
@@ -206,5 +166,15 @@
       form.dataset.editIndex = index;
     }
 
-    function deleteEntry4
+    function deleteEntry(index) {
+      if (confirm('Yakin ingin menghapus entri ini?')) {
+        data.splice(index, 1);
+        saveData();
+        renderTable();
+      }
+    }
 
+    renderTable();
+  </script>
+</body>
+</html>
