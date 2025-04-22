@@ -2,58 +2,119 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Input Garapan Airdrop</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 1rem;
-      background: #f9f9f9;
+    :root {
+      --background: #121212;
+      --surface: #1e1e1e;
+      --primary: #bb3b3b;
+      --on-background: #ffffff;
+      --on-surface: #e0e0e0;
+      --secondary: #f0f0f0;
+      --highlight: #ff4081;
     }
+
+    body {
+      background-color: var(--background);
+      color: var(--on-background);
+      font-family: sans-serif;
+      margin: 0;
+      padding: 1rem;
+    }
+
     h1 {
       text-align: center;
+      color: var(--highlight);
     }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
+
     input, select, button {
       padding: 0.5rem;
       font-size: 1rem;
+      border: 1px solid var(--surface);
+      border-radius: 4px;
+      background-color: var(--surface);
+      color: var(--on-surface);
+      margin-bottom: 0.5rem;
     }
+
+    input[type="text"], input[type="url"], input[type="date"] {
+      width: 100%;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: var(--on-background);
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: var(--highlight);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      margin-top: 1rem;
     }
+
     th, td {
-      border: 1px solid #ccc;
-      padding: 0.4rem;
+      padding: 0.5rem;
       text-align: left;
+      border: 1px solid var(--surface);
     }
+
+    th {
+      background-color: var(--surface);
+    }
+
+    td a {
+      color: var(--highlight);
+      text-decoration: none;
+    }
+
+    td a:hover {
+      text-decoration: underline;
+    }
+
     .actions button {
-      margin-right: 0.3rem;
+      background-color: transparent;
+      color: var(--highlight);
+      border: none;
+      cursor: pointer;
     }
+
+    .actions button:hover {
+      text-decoration: underline;
+    }
+
+    input[type="text"]:focus, input[type="url"]:focus, input[type="date"]:focus, select:focus {
+      outline: none;
+      border-color: var(--highlight);
+    }
+
     @media (max-width: 600px) {
       table, thead, tbody, th, td, tr {
         display: block;
       }
+
       thead {
         display: none;
       }
+
       tr {
         margin-bottom: 1rem;
-        background: #fff;
+        background-color: var(--surface);
         padding: 0.5rem;
-        border: 1px solid #ddd;
+        border: 1px solid var(--surface);
       }
+
       td {
         display: flex;
         justify-content: space-between;
         padding: 0.5rem 0;
       }
+
       td::before {
         content: attr(data-label);
         font-weight: bold;
@@ -63,8 +124,8 @@
 </head>
 <body>
   <h1>Input Garapan Airdrop</h1>
+  <input type="text" id="searchInput" placeholder="Cari entri..." onkeyup="searchTable()" />
   <form id="airdrop-form">
-    <input type="text" id="number" placeholder="Nomor" required />
     <input type="text" id="project" placeholder="Project" required />
     <select id="type" required>
       <option value="">Pilih Keterangan</option>
@@ -107,6 +168,7 @@
   <script>
     const form = document.getElementById('airdrop-form');
     const tableBody = document.querySelector('#airdrop-table tbody');
+    const searchInput = document.getElementById('searchInput');
     let data = JSON.parse(localStorage.getItem('airdropData')) || [];
 
     function renderTable() {
@@ -114,7 +176,7 @@
       data.forEach((entry, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td data-label="Nomor">${entry.number}</td>
+          <td data-label="Nomor">${index + 1}</td>
           <td data-label="Project">${entry.project}</td>
           <td data-label="Keterangan">${entry.type}</td>
           <td data-label="Status">${entry.status}</td>
@@ -137,46 +199,10 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const newEntry = {
-        number: form.number.value,
         project: form.project.value,
         type: form.type.value,
         status: form.status.value,
         date: form.date.value,
         wallet: form.wallet.value,
-        link: form.link.value
-      };
-      if (form.dataset.editIndex !== undefined) {
-        data[form.dataset.editIndex] = newEntry;
-        delete form.dataset.editIndex;
-      } else {
-        data.push(newEntry);
-      }
-      saveData();
-      renderTable();
-      form.reset();
-    });
+        link:11
 
-    function editEntry(index) {
-      const entry = data[index];
-      form.number.value = entry.number;
-      form.project.value = entry.project;
-      form.type.value = entry.type;
-      form.status.value = entry.status;
-      form.date.value = entry.date;
-      form.wallet.value = entry.wallet;
-      form.link.value = entry.link;
-      form.dataset.editIndex = index;
-    }
-
-    function deleteEntry(index) {
-      if (confirm('Yakin ingin menghapus entri ini?')) {
-        data.splice(index, 1);
-        saveData();
-        renderTable();
-      }
-    }
-
-    renderTable();
-  </script>
-</body>
-</html>
