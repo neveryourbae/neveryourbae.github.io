@@ -6,125 +6,93 @@
   <title>Input Garapan Airdrop</title>
   <style>
     :root {
-      --background: #121212;
-      --surface: #1e1e1e;
-      --primary: #bb3b3b;
-      --on-background: #ffffff;
-      --on-surface: #e0e0e0;
-      --secondary: #f0f0f0;
-      --highlight: #ff4081;
+      --bg-light: #f9f9f9;
+      --bg-dark: #121212;
+      --text-light: #333;
+      --text-dark: #f9f9f9;
+      --primary-light: #4caf50;
+      --primary-dark: #388e3c;
+      --border-light: #ccc;
+      --border-dark: #444;
     }
 
     body {
-      background-color: var(--background);
-      color: var(--on-background);
       font-family: sans-serif;
-      margin: 0;
       padding: 1rem;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
     }
 
     h1 {
       text-align: center;
-      color: var(--highlight);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
     }
 
     input, select, button {
       padding: 0.5rem;
       font-size: 1rem;
-      border: 1px solid var(--surface);
+      border: 1px solid var(--border-light);
       border-radius: 4px;
-      background-color: var(--surface);
-      color: var(--on-surface);
-      margin-bottom: 0.5rem;
-    }
-
-    input[type="text"], input[type="url"], input[type="date"] {
-      width: 100%;
     }
 
     button {
-      background-color: var(--primary);
-      color: var(--on-background);
+      background-color: var(--primary-light);
+      color: white;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: var(--highlight);
+      background-color: var(--primary-dark);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
+      font-size: 0.9rem;
     }
 
     th, td {
-      padding: 0.5rem;
+      border: 1px solid var(--border-light);
+      padding: 0.4rem;
       text-align: left;
-      border: 1px solid var(--surface);
-    }
-
-    th {
-      background-color: var(--surface);
-    }
-
-    td a {
-      color: var(--highlight);
-      text-decoration: none;
-    }
-
-    td a:hover {
-      text-decoration: underline;
     }
 
     .actions button {
-      background-color: transparent;
-      color: var(--highlight);
+      margin-right: 0.3rem;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem;
+      background-color: var(--primary-light);
+      color: white;
       border: none;
+      border-radius: 50%;
       cursor: pointer;
     }
 
-    .actions button:hover {
-      text-decoration: underline;
-    }
-
-    input[type="text"]:focus, input[type="url"]:focus, input[type="date"]:focus, select:focus {
-      outline: none;
-      border-color: var(--highlight);
-    }
-
-    @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-
-      thead {
-        display: none;
-      }
-
-      tr {
-        margin-bottom: 1rem;
-        background-color: var(--surface);
-        padding: 0.5rem;
-        border: 1px solid var(--surface);
-      }
-
-      td {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.5rem 0;
-      }
-
-      td::before {
-        content: attr(data-label);
-        font-weight: bold;
-      }
+    .theme-toggle:hover {
+      background-color: var(--primary-dark);
     }
   </style>
 </head>
 <body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
   <h1>Input Garapan Airdrop</h1>
-  <input type="text" id="searchInput" placeholder="Cari entri..." onkeyup="searchTable()" />
   <form id="airdrop-form">
     <input type="text" id="project" placeholder="Project" required />
     <select id="type" required>
@@ -168,8 +136,9 @@
   <script>
     const form = document.getElementById('airdrop-form');
     const tableBody = document.querySelector('#airdrop-table tbody');
-    const searchInput = document.getElementById('searchInput');
+    const themeToggle = document.getElementById('theme-toggle');
     let data = JSON.parse(localStorage.getItem('airdropData')) || [];
+    let isDarkMode = localStorage.getItem('theme') === 'dark';
 
     function renderTable() {
       tableBody.innerHTML = '';
@@ -194,8 +163,16 @@
 
     function saveData() {
       localStorage.setItem('airdropData', JSON.stringify(data));
-      renderTable();
     }
+
+    function toggleTheme() {
+      isDarkMode = !isDarkMode;
+      document.body.classList.toggle('dark-mode', isDarkMode);
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+      themeToggle.textContent = isDarkMode ? '☀️' : '🌙';
+    }
+
+    themeToggle.addEventListener('click', toggleTheme);
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -207,6 +184,27 @@
         wallet: form.wallet.value,
         link: form.link.value,
       };
-      data.push(newEntry);
-      save12
+      if (form.dataset.editIndex !== undefined) {
+        data[form.dataset.editIndex] = newEntry;
+        delete form.dataset.editIndex;
+      } else {
+        data.push(newEntry);
+      }
+      saveData();
+      renderTable();
+      form.reset();
+    });
+
+    function editEntry(index) {
+      const entry = data[index];
+      form.project.value = entry.project;
+      form.type.value = entry.type;
+      form.status.value = entry.status;
+      form.date.value = entry.date;
+      form.wallet.value = entry.wallet;
+      form.link.value = entry.link;
+      form.dataset.editIndex = index;
+    }
+
+    function deleteEntry4
 
