@@ -1,3 +1,4 @@
+
 function generateCard() {
   const token = document.getElementById("token").value || "$TOKEN";
   const price = document.getElementById("price").value || "@ 54.8K";
@@ -20,33 +21,25 @@ function generateCard() {
   reader.onload = function (e) {
     const bgImg = new Image();
     bgImg.onload = function () {
-      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw background
       ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-      // Text styles
       ctx.shadowColor = "#0f0";
       ctx.shadowBlur = 10;
       ctx.textBaseline = "top";
 
-      // Token & Price
       ctx.font = "bold 40px Orbitron";
       ctx.fillStyle = "#00ff00";
       ctx.fillText(`${token} ${price}`, 880, 60);
 
-      // Time & Username
       ctx.font = "30px Orbitron";
       ctx.fillText(`${time}`, 880, 110);
       ctx.fillText(`${user}`, 880, 150);
 
-      // PNL Multiplier
       ctx.font = "bold 80px Orbitron";
       ctx.fillStyle = "#39ff14";
       ctx.fillText(`${pnl}`, 880, 240);
 
-      // Reach
       ctx.font = "30px Orbitron";
       ctx.fillStyle = "#ffffff";
       ctx.fillText(`Reached ${reach}`, 880, 320);
