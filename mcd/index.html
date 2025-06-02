@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Struk FamilyMart</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .receipt {
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      width: 320px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+    .center { text-align: center; }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="receipt" id="receipt">
+      <div class="center">
+        <h2>FamilyMart</h2>
+      </div>
+      <p>STORE: FMI RSUD CENGKARENG</p>
+      <p>31/05/2025 12:51 ICH 002</p>
+      <p><strong>RCT NO:</strong> <span id="rctNo">---</span></p>
+      <p>CASHIER: Andi Hardiansah</p>
+      <p class="center">*SALES RECEIPT*</p>
+      <p>Coca Cola Zero 390ml .......... 6,300</p>
+      <p>Coca Cola Pet 250ml .......... 17,600</p>
+      <p><strong>TOTAL .................... Rp 23,900</strong></p>
+      <p>DANA ............................ Rp 23,900</p>
+      <p>Z98057206JGJ12</p>
+      <p><strong>TOTAL PAID .......... Rp 23,900</strong></p>
+      <p>CHANGES .................... 0</p>
+      <p># ITEM SOLD: D .......... 5</p>
+      <p>DPP Nilai Lain ............. Rp 2,132</p>
+      <p>PPP ................................. 1.0</p>
+      <p class="center">Harga sudah termasuk pajak</p>
+      <p class="center">PT Fajar Mitra Indah</p>
+      <p class="center">WA: 0898-3862-8998</p>
+      <p class="center">IG & TIKTOK: @amilyMartID</p>
+    </div>
+    <div class="center">
+      <button onclick="generateRCT()">Submit</button>
+    </div>
+  </div>
 
+  <script>
+    function generateRCT() {
+      const rctSpan = document.getElementById("rctNo");
+      const newRCT = generateRandomRCT();
+      rctSpan.textContent = newRCT;
+    }
+
+    function generateRandomRCT() {
+      let rct = '';
+      for (let i = 0; i < 15; i++) {
+        rct += Math.floor(Math.random() * 10);
+      }
+      return rct;
+    }
+
+    // Generate pertama kali saat load
+    generateRCT();
+  </script>
+</body>
+  </html>
