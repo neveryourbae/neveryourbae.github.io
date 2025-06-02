@@ -2,7 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Struk Dinamis</title>
+  <title>Struk FamilyMart Dinamis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: monospace;
@@ -11,11 +13,13 @@
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      margin: 0;
     }
 
     .container {
       position: relative;
-      width: 400px;
+      max-width: 400px;
+      width: 100%;
     }
 
     .receipt-img {
@@ -25,31 +29,51 @@
 
     .rct-no {
       position: absolute;
-      top: 104px; /* Sesuaikan posisi vertikal */
-      left: 138px; /* Sesuaikan posisi horizontal */
-      font-size: 14px;
-      letter-spacing: 2px;
-      color: black;
-      background: white;
+      /* Posisi proporsional, agar responsif */
+      top: 26.2%; /* Sesuaikan dengan posisi "RCT NO:" di gambar */
+      left: 34.5%;
+      font-size: 3.4vw; /* Dinamis tergantung lebar layar */
+      color: #000;
+      background-color: white;
       padding: 0 4px;
+      font-weight: normal;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     button {
-      margin-top: 20px;
-      padding: 10px 20px;
+      padding: 10px 16px;
       font-family: monospace;
+      font-size: 1rem;
       cursor: pointer;
+    }
+
+    @media (max-width: 500px) {
+      .rct-no {
+        font-size: 4vw;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <img class="receipt-img" src="a.png" alt="Struk" />
+  <div class="container" id="receiptArea">
+    <img class="receipt-img" src="a.png" alt="Struk">
     <div class="rct-no" id="rctNo">509787052416356</div>
   </div>
 
-  <button onclick="generateRCT()">Submit</button>
+  <div class="buttons">
+    <button onclick="generateRCT()">Submit</button>
+    <button onclick="downloadReceipt()">Download Struk</button>
+  </div>
 
   <script>
     function generateRCT() {
@@ -64,78 +88,19 @@
       }
       return rct;
     }
-  </script>
 
-</body>
-</html>
-
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Struk Dinamis</title>
-  <style>
-    body {
-      font-family: monospace;
-      background: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+    function downloadReceipt() {
+      const receiptElement = document.getElementById("receiptArea");
+      html2canvas(receiptElement).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "struk-familymart-dinamis.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
     }
 
-    .container {
-      position: relative;
-      width: 400px;
-    }
-
-    .receipt-img {
-      width: 100%;
-      display: block;
-    }
-
-    .rct-no {
-      position: absolute;
-      top: 104px; /* Sesuaikan posisi vertikal */
-      left: 138px; /* Sesuaikan posisi horizontal */
-      font-size: 14px;
-      letter-spacing: 2px;
-      color: black;
-      background: white;
-      padding: 0 4px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-family: monospace;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <img class="receipt-img" src="a.png" alt="Struk" />
-    <div class="rct-no" id="rctNo">509787052416356</div>
-  </div>
-
-  <button onclick="generateRCT()">Submit</button>
-
-  <script>
-    function generateRCT() {
-      const rctSpan = document.getElementById("rctNo");
-      rctSpan.textContent = generateRandomRCT();
-    }
-
-    function generateRandomRCT() {
-      let rct = '';
-      for (let i = 0; i < 15; i++) {
-        rct += Math.floor(Math.random() * 10);
-      }
-      return rct;
-    }
+    // Auto-generate saat load
+    generateRCT();
   </script>
 
 </body>
