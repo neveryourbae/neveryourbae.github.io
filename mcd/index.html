@@ -29,14 +29,13 @@
 
     .rct-no {
       position: absolute;
-      /* Posisi proporsional, agar responsif */
-      top: 26.2%; /* Sesuaikan dengan posisi "RCT NO:" di gambar */
+      top: 25.5%;  /* sedikit lebih ke atas */
       left: 34.5%;
-      font-size: 3.4vw; /* Dinamis tergantung lebar layar */
+      font-size: 2.9vw; /* disesuaikan agar tidak terlalu besar */
       color: #000;
       background-color: white;
-      padding: 0 4px;
-      font-weight: normal;
+      padding: 0 3px;
+      font-weight: normal; /* tidak bold */
       font-family: monospace;
       white-space: nowrap;
     }
@@ -58,7 +57,7 @@
 
     @media (max-width: 500px) {
       .rct-no {
-        font-size: 4vw;
+        font-size: 3.6vw;
       }
     }
   </style>
@@ -99,8 +98,7 @@
       });
     }
 
-    // Auto-generate saat load
-    generateRCT();
+    generateRCT(); // Generate saat pertama kali dibuka
   </script>
 
 </body>
